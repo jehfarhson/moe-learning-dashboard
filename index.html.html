@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Learning Assessment Dashboard — Federal Ministry of Education, Nigeria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F2E8;
+    --panel:#FFFFFF;
+    --ink:#211F19;
+    --muted:#6C6656;
+    --faint:#9A937E;
+    --border:#E2DCC9;
+    --border-strong:#C9C1A8;
+    --green-deep:#0B5D3B;
+    --green-mid:#3F7F55;
+    --green-pale:#DCE8DE;
+    --gold:#B4863A;
+    --gold-pale:#F1E5C9;
+    --amber:#D69A3B;
+    --red:#AE4632;
+    --pl1:#AE4632;
+    --pl2:#D69A3B;
+    --pl3:#5E9464;
+    --pl4:#0B5D3B;
+    --shadow: 0 1px 2px rgba(33,31,25,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', -apple-system, sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:0 28px 64px;}
+
+  /* ---------- Header / masthead ---------- */
+  header.masthead{
+    background:var(--green-deep);
+    color:#F5F2E8;
+    border-bottom:4px solid var(--gold);
+  }
+  .masthead-inner{
+    max-width:1280px;margin:0 auto;padding:22px 28px 26px;
+    display:flex;align-items:flex-start;gap:18px;
+  }
+  .crest{
+    flex:none;width:54px;height:54px;margin-top:2px;
+  }
+  .masthead-text .kicker{
+    font-size:12.5px;letter-spacing:0.09em;text-transform:uppercase;
+    color:#CFE3D3;font-weight:600;margin:0 0 6px;
+  }
+  .masthead-text h1{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.12;
+    margin:0 0 8px;
+    color:#FFFFFF;
+    letter-spacing:-0.01em;
+  }
+  .masthead-text p{
+    margin:0;
+    color:#D6E5D8;
+    font-size:15px;
+    max-width:640px;
+  }
+  .masthead-meta{
+    margin-left:auto;text-align:right;flex:none;
+    padding-top:4px;
+  }
+  .masthead-meta .tag{
+    display:inline-block;
+    font-size:12px;
+    color:#0B5D3B;
+    background:#F1E5C9;
+    border-radius:3px;
+    padding:4px 10px;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .masthead-meta .src{
+    font-size:12.5px;color:#B9D0BD;line-height:1.5;
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{
+    background:var(--panel);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:30;
+  }
+  .filterbar-inner{
+    max-width:1280px;margin:0 auto;padding:14px 28px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .filterbar label{
+    font-size:12px;color:var(--muted);font-weight:600;
+    margin-right:4px;
+  }
+  .filterbar select{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13.5px;
+    padding:7px 30px 7px 11px;
+    border-radius:5px;
+    border:1px solid var(--border-strong);
+    background:#FDFCF8 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%236C6656"><path d="M5.5 7.5l4.5 5 4.5-5z"/></svg>') no-repeat right 8px center / 14px;
+    appearance:none;
+    -webkit-appearance:none;
+    color:var(--ink);
+    cursor:pointer;
+    min-width:130px;
+  }
+  .filterbar select:focus{outline:2px solid var(--green-mid);outline-offset:1px;}
+  .filter-group{display:flex;align-items:center;}
+  .reset-btn{
+    margin-left:auto;
+    font-size:13px;font-weight:600;
+    color:var(--green-deep);
+    background:var(--green-pale);
+    border:1px solid #C4D8C7;
+    border-radius:5px;
+    padding:7px 14px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .reset-btn:hover{background:#CBDECE;}
+  .active-filter-note{
+    font-size:12.5px;color:var(--muted);
+    padding:0 28px 12px;max-width:1280px;margin:0 auto;
+  }
+  .active-filter-note b{color:var(--green-deep);}
+
+  /* ---------- Sections ---------- */
+  section{padding-top:34px;}
+  .section-label{
+    font-size:12px;letter-spacing:0.07em;text-transform:uppercase;
+    color:var(--gold);font-weight:700;margin:0 0 4px;
+  }
+  .section-title{
+    font-family:'Newsreader', serif;
+    font-size:22px;font-weight:600;
+    margin:0 0 18px;color:var(--ink);
+  }
+
+  /* ---------- KPI row ---------- */
+  .kpi-row{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:8px;overflow:hidden;
+  }
+  .kpi{
+    background:var(--panel);padding:18px 20px;
+  }
+  .kpi .label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  .kpi .value{
+    font-family:'Newsreader', serif;font-weight:600;
+    font-size:29px;color:var(--ink);line-height:1;
+  }
+  .kpi .value .unit{font-size:15px;color:var(--faint);font-weight:500;margin-left:2px;}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:7px;}
+  .kpi .sub.pos{color:var(--green-mid);}
+  .kpi .sub.neg{color:var(--red);}
+
+  /* ---------- Two column grid ---------- */
+  .two-col{display:grid;grid-template-columns:1.15fr 0.85fr;gap:20px;align-items:stretch;}
+  .panel{
+    background:var(--panel);border:1px solid var(--border);border-radius:8px;
+    padding:20px 22px;box-shadow:var(--shadow);
+  }
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+  .panel-head h3{font-family:'Newsreader',serif;font-size:17px;font-weight:600;margin:0;}
+  .panel-head .hint{font-size:11.5px;color:var(--faint);}
+
+  /* ---------- Map / cartogram ---------- */
+  .map-legend{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);margin-top:10px;}
+  .map-legend .swatch-strip{
+    width:120px;height:8px;border-radius:4px;
+    background:linear-gradient(90deg,#C0492F,#D69A3B,#8FB08D,#0B5D3B);
+  }
+  #mapSvg .state-path{cursor:pointer;stroke:#FFFFFF;stroke-width:0.9;transition:filter .12s, stroke-width .12s;}
+  #mapSvg .state-path:hover{filter:brightness(1.08);stroke-width:1.6;}
+  #mapSvg .state-path.selected{stroke:var(--ink);stroke-width:2.2;}
+  #mapSvg .state-path.dimmed{opacity:0.35;}
+  #mapSvg .state-dot{fill:#fff;stroke:rgba(0,0,0,0.25);stroke-width:0.5;pointer-events:none;}
+  #mapSvg .state-dot.hot{fill:var(--gold);}
+  .legend-scale{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:10px;font-family:'IBM Plex Mono',monospace;}
+  .legend-scale .swatch-strip{flex:none;width:140px;height:9px;border-radius:4px;
+    background:linear-gradient(90deg,#AE4632,#D69A3B,#8FB08D,#0B5D3B);}
+
+  /* ---------- Insight callouts ---------- */
+  .insight-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px;}
+  .insight-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:8px;
+    padding:16px 18px;border-left:3px solid var(--gold);box-shadow:var(--shadow);
+  }
+  .insight-card .itag{font-size:10.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .insight-card .itext{font-size:13.5px;color:var(--ink);line-height:1.5;}
+  .insight-card .itext b{color:var(--green-deep);font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+  /* ---------- Stacked proficiency bars (ranking) ---------- */
+  .stack-list{list-style:none;margin:0;padding:0;}
+  .stack-list li{padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .stack-list li:last-child{border-bottom:none;}
+  .stack-list li:hover{background:#FAF8F1;}
+  .stack-list .st-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+  .stack-list .st-name{color:var(--ink);font-weight:500;}
+  .stack-list .st-score{font-family:'IBM Plex Mono',monospace;color:var(--muted);}
+  .stack-list .st-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#EFEADA;}
+  .stack-list .st-bar span{height:100%;}
+
+  /* ---------- Entrance animation ---------- */
+  @keyframes riseIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .panel, .kpi-row, .insight-row, .equity-row{animation:riseIn .5s ease both;}
+  .kpi-row{animation-delay:.02s;}
+  .insight-row{animation-delay:.06s;}
+  @media (prefers-reduced-motion: reduce){
+    .panel, .kpi-row, .insight-row, .equity-row{animation:none;}
+  }
+  #tooltip{
+    position:fixed;pointer-events:none;z-index:100;
+    background:var(--ink);color:#F5F2E8;font-size:12.5px;
+    padding:8px 11px;border-radius:6px;line-height:1.45;
+    box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    display:none;max-width:210px;
+  }
+  #tooltip b{color:#F1E5C9;}
+
+  /* ---------- Ranking list ---------- */
+  .rank-list{list-style:none;margin:0;padding:0;}
+  .rank-list li{
+    display:flex;align-items:center;gap:10px;
+    padding:8px 0;border-bottom:1px solid var(--border);
+    font-size:13.5px;cursor:pointer;
+  }
+  .rank-list li:last-child{border-bottom:none;}
+  .rank-list li:hover{background:#FAF8F1;}
+  .rank-list .rname{flex:1;color:var(--ink);}
+  .rank-list .rbar-track{width:90px;height:6px;background:#EFEADA;border-radius:3px;overflow:hidden;}
+  .rank-list .rbar-fill{height:100%;border-radius:3px;background:var(--green-mid);}
+  .rank-list .rscore{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:36px;text-align:right;}
+  .rank-toggle{display:flex;gap:6px;margin-bottom:10px;}
+  .rank-toggle button{
+    font-family:inherit;font-size:11.5px;font-weight:600;
+    border:1px solid var(--border-strong);background:#FDFCF8;color:var(--muted);
+    padding:4px 10px;border-radius:20px;cursor:pointer;
+  }
+  .rank-toggle button.on{background:var(--green-deep);border-color:var(--green-deep);color:#fff;}
+
+  /* ---------- Donut ---------- */
+  .donut-row{display:flex;align-items:center;gap:20px;}
+  .donut-legend{flex:1;}
+  .dl-item{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-bottom:9px;}
+  .dl-dot{width:10px;height:10px;border-radius:2px;flex:none;}
+  .dl-item .dl-label{flex:1;color:var(--ink);}
+  .dl-item .dl-pct{font-family:'IBM Plex Mono',monospace;color:var(--muted);}
+
+  /* ---------- Subdomain bars ---------- */
+  .subdomain-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px;
+  }
+  .sd-group-title{
+    font-size:11.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+    color:var(--gold);margin:18px 0 10px;
+  }
+  .sd-group-title:first-child{margin-top:0;}
+  .sd-row{display:flex;align-items:center;gap:12px;padding:6px 0;}
+  .sd-name{width:168px;flex:none;font-size:13px;color:var(--ink);}
+  .sd-track{flex:1;height:9px;background:#EFEADA;border-radius:4px;overflow:hidden;}
+  .sd-fill{height:100%;border-radius:4px;}
+  .sd-val{width:38px;flex:none;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);}
+
+  /* ---------- Equity row ---------- */
+  .equity-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .equity-card h4{
+    font-family:'Newsreader',serif;font-size:15.5px;font-weight:600;margin:0 0 16px;
+  }
+  .equity-bars{display:flex;align-items:flex-end;gap:26px;height:130px;padding:0 6px;}
+  .eq-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .eq-bar{width:46px;border-radius:5px 5px 0 0;position:relative;}
+  .eq-bar .eq-num{
+    position:absolute;top:-20px;left:0;right:0;text-align:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:500;color:var(--ink);
+  }
+  .eq-name{margin-top:8px;font-size:12px;color:var(--muted);text-align:center;}
+  .eq-gap{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
+    font-size:12.5px;color:var(--muted);text-align:center;
+  }
+  .eq-gap b{color:var(--ink);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:44px;padding-top:22px;border-top:1px solid var(--border-strong);
+    font-size:12px;color:var(--muted);
+  }
+  footer p{margin:0 0 8px;max-width:820px;}
+  footer .plkey{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
+  footer .plkey span{display:flex;align-items:center;gap:6px;}
+  footer .plkey .dot{width:9px;height:9px;border-radius:2px;}
+
+  @media (max-width: 900px){
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .subdomain-grid{grid-template-columns:1fr;}
+    .equity-row{grid-template-columns:1fr;}
+    .masthead-inner{flex-wrap:wrap;}
+    .masthead-meta{margin-left:0;text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <svg class="crest" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="30" stroke="#F1E5C9" stroke-width="2"/>
+      <path d="M32 12 L46 40 H18 Z" fill="#F1E5C9"/>
+      <rect x="24" y="40" width="16" height="9" fill="#F1E5C9"/>
+      <circle cx="32" cy="32" r="4.2" fill="#0B5D3B"/>
+    </svg>
+    <div class="masthead-text">
+      <p class="kicker">Federal Ministry of Education &nbsp;·&nbsp; Federal Republic of Nigeria</p>
+      <h1>National Learning Assessment Dashboard</h1>
+      <p>Primary 3 English language proficiency — item-level results from the 2022 assessment cohort, covering 36 states and the FCT.</p>
+    </div>
+    <div class="masthead-meta">
+      <div class="tag">2022 Cohort · Primary 3</div>
+      <div class="src">63,649 pupils assessed<br>37 states &amp; FCT</div>
+    </div>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="filterbar-inner">
+    <div class="filter-group">
+      <label for="fState">State</label>
+      <select id="fState"></select>
+    </div>
+    <div class="filter-group">
+      <label for="fGender">Gender</label>
+      <select id="fGender">
+        <option value="All">All</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="fLoc">Location</label>
+      <select id="fLoc">
+        <option value="All">All</option>
+        <option value="Urban">Urban</option>
+        <option value="Rural">Rural</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="fOwn">Ownership</label>
+      <select id="fOwn">
+        <option value="All">All</option>
+        <option value="Public">Public</option>
+        <option value="Private">Private</option>
+      </select>
+    </div>
+    <button class="reset-btn" id="resetBtn">Reset filters</button>
+  </div>
+</div>
+<div class="active-filter-note" id="activeNote"></div>
+
+<div class="wrap">
+
+  <section id="kpiSection">
+    <div class="kpi-row" id="kpiRow"></div>
+    <div class="insight-row" id="insightRow"></div>
+  </section>
+
+  <section>
+    <div class="two-col" style="margin-top:34px;">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Average scale score by state</h3>
+          <span class="hint">click a state to filter</span>
+        </div>
+        <svg id="mapSvg" viewBox="0 0 620 501" style="width:100%;height:auto;max-height:440px;"></svg>
+        <div class="legend-scale">
+          <span id="legendMin">400</span>
+          <div class="swatch-strip"></div>
+          <span id="legendMax">600</span>
+          <span style="margin-left:auto;color:var(--faint)">scale score</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>State ranking</h3>
+          <span class="hint">by performance level mix</span>
+        </div>
+        <div class="rank-toggle">
+          <button class="on" data-n="6" id="rankTop">Top 6</button>
+          <button data-n="6" id="rankBottom">Bottom 6</button>
+          <button data-n="37" id="rankAll">All states</button>
+        </div>
+        <ul class="stack-list" id="rankList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Performance level distribution</h3>
+          <span class="hint">% of pupils assessed</span>
+        </div>
+        <div class="donut-row">
+          <svg id="donutSvg" width="150" height="150" viewBox="0 0 150 150"></svg>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Reading domains — % correct</h3>
+          <span class="hint">by skill area</span>
+        </div>
+        <div id="domainMini"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Item domains</p>
+    <h2 class="section-title">Competency breakdown</h2>
+    <div class="panel">
+      <div class="subdomain-grid" id="subdomainGrid"></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Equity lens</p>
+    <h2 class="section-title">Gaps across gender, location and ownership</h2>
+    <div class="equity-row">
+      <div class="panel equity-card">
+        <h4>Gender</h4>
+        <div class="equity-bars" id="eqGender"></div>
+        <div class="eq-gap" id="eqGenderGap"></div>
+      </div>
+      <div class="panel equity-card">
+        <h4>School location</h4>
+        <div class="equity-bars" id="eqLoc"></div>
+        <div class="eq-gap" id="eqLocGap"></div>
+      </div>
+      <div class="panel equity-card">
+        <h4>School ownership</h4>
+        <div class="equity-bars" id="eqOwn"></div>
+        <div class="eq-gap" id="eqOwnGap"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b style="color:var(--ink)">Performance levels</b> are derived from IRT-scaled ability estimates (scale score, 400–600 range) on the Primary 3 English instrument, converted to percent-correct and banded as shown below.</p>
+    <div class="plkey">
+      <span><span class="dot" style="background:var(--pl1)"></span>Below Partially Meets</span>
+      <span><span class="dot" style="background:var(--pl2)"></span>Partially Meets</span>
+      <span><span class="dot" style="background:var(--pl3)"></span>Meets</span>
+      <span><span class="dot" style="background:var(--pl4)"></span>Exceeds</span>
+    </div>
+    <p style="margin-top:14px;">Figures are computed directly from the assessment's scored research file (state, LGA, school, gender, location and ownership fields). Dashboard built for illustrative purposes in the style of national learning-outcome dashboards; state tiles are shown as a schematic grid, not a surveyed map.</p>
+  </footer>
+
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+const RAW = [{"State_clean":"Abia","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":148,"mean_ss":479.0,"mean_pct":51.1,"pl1":14,"pl2":88,"pl3":46,"pl4":0,"psub1_1":52.2,"psub1_2":49.4,"psub2_1":57.8,"psub2_2":50.2,"psub2_3":46.5,"psub2_4":52.7,"psub2_5":46.8,"psub2_6":44.9,"psub3_1":51.2,"psub3_2":54.1,"psub3_3":47.2},{"State_clean":"Abia","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":172,"mean_ss":487.8,"mean_pct":58.7,"pl1":7,"pl2":87,"pl3":77,"pl4":1,"psub1_1":59.2,"psub1_2":57.9,"psub2_1":66.3,"psub2_2":60.0,"psub2_3":46.8,"psub2_4":63.3,"psub2_5":49.9,"psub2_6":58.1,"psub3_1":59.6,"psub3_2":59.8,"psub3_3":54.4},{"State_clean":"Abia","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":625,"mean_ss":479.3,"mean_pct":51.0,"pl1":58,"pl2":392,"pl3":171,"pl4":4,"psub1_1":52.1,"psub1_2":49.4,"psub2_1":59.2,"psub2_2":49.1,"psub2_3":43.4,"psub2_4":52.1,"psub2_5":42.9,"psub2_6":54.6,"psub3_1":51.4,"psub3_2":51.3,"psub3_3":48.8},{"State_clean":"Abia","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":151,"mean_ss":479.4,"mean_pct":50.6,"pl1":13,"pl2":96,"pl3":40,"pl4":2,"psub1_1":51.9,"psub1_2":48.6,"psub2_1":56.0,"psub2_2":49.7,"psub2_3":47.7,"psub2_4":50.9,"psub2_5":45.2,"psub2_6":48.7,"psub3_1":50.5,"psub3_2":53.6,"psub3_3":47.5},{"State_clean":"Abia","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":129,"mean_ss":491.7,"mean_pct":62.0,"pl1":7,"pl2":59,"pl3":60,"pl4":3,"psub1_1":63.6,"psub1_2":59.6,"psub2_1":71.9,"psub2_2":64.4,"psub2_3":49.1,"psub2_4":64.3,"psub2_5":52.1,"psub2_6":60.5,"psub3_1":62.5,"psub3_2":63.0,"psub3_3":58.4},{"State_clean":"Abia","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":569,"mean_ss":474.2,"mean_pct":46.3,"pl1":84,"pl2":363,"pl3":118,"pl4":4,"psub1_1":47.1,"psub1_2":45.2,"psub2_1":54.3,"psub2_2":44.9,"psub2_3":37.5,"psub2_4":47.3,"psub2_5":39.9,"psub2_6":49.4,"psub3_1":46.7,"psub3_2":47.1,"psub3_3":43.5},{"State_clean":"Adamawa","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":156,"mean_ss":471.3,"mean_pct":43.6,"pl1":17,"pl2":115,"pl3":24,"pl4":0,"psub1_1":44.5,"psub1_2":42.2,"psub2_1":52.3,"psub2_2":45.2,"psub2_3":31.4,"psub2_4":46.5,"psub2_5":37.7,"psub2_6":38.5,"psub3_1":44.4,"psub3_2":40.7,"psub3_3":43.3},{"State_clean":"Adamawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":146,"mean_ss":479.1,"mean_pct":50.5,"pl1":4,"pl2":114,"pl3":28,"pl4":0,"psub1_1":53.2,"psub1_2":46.5,"psub2_1":60.4,"psub2_2":52.1,"psub2_3":42.2,"psub2_4":46.7,"psub2_5":39.4,"psub2_6":60.3,"psub3_1":49.5,"psub3_2":53.0,"psub3_3":50.6},{"State_clean":"Adamawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":648,"mean_ss":475.8,"mean_pct":47.7,"pl1":69,"pl2":435,"pl3":134,"pl4":10,"psub1_1":49.8,"psub1_2":44.6,"psub2_1":56.4,"psub2_2":49.0,"psub2_3":39.0,"psub2_4":45.6,"psub2_5":40.3,"psub2_6":49.9,"psub3_1":47.2,"psub3_2":51.1,"psub3_3":45.3},{"State_clean":"Adamawa","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":144,"mean_ss":467.8,"mean_pct":40.2,"pl1":18,"pl2":114,"pl3":12,"pl4":0,"psub1_1":40.5,"psub1_2":39.8,"psub2_1":50.0,"psub2_2":37.0,"psub2_3":28.6,"psub2_4":42.4,"psub2_5":37.5,"psub2_6":36.8,"psub3_1":42.0,"psub3_2":35.9,"psub3_3":37.5},{"State_clean":"Adamawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":153,"mean_ss":480.0,"mean_pct":51.7,"pl1":10,"pl2":106,"pl3":37,"pl4":0,"psub1_1":51.5,"psub1_2":52.0,"psub2_1":58.9,"psub2_2":49.7,"psub2_3":40.9,"psub2_4":52.9,"psub2_5":48.2,"psub2_6":56.9,"psub3_1":52.7,"psub3_2":49.7,"psub3_3":49.3},{"State_clean":"Adamawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":549,"mean_ss":472.9,"mean_pct":45.1,"pl1":66,"pl2":375,"pl3":103,"pl4":5,"psub1_1":47.6,"psub1_2":41.4,"psub2_1":53.6,"psub2_2":46.1,"psub2_3":38.4,"psub2_4":43.7,"psub2_5":36.3,"psub2_6":44.7,"psub3_1":44.4,"psub3_2":48.0,"psub3_3":44.9},{"State_clean":"Akwa Ibom","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":137,"mean_ss":482.5,"mean_pct":53.6,"pl1":5,"pl2":98,"pl3":34,"pl4":0,"psub1_1":53.7,"psub1_2":53.5,"psub2_1":60.9,"psub2_2":48.6,"psub2_3":48.2,"psub2_4":57.9,"psub2_5":43.6,"psub2_6":59.9,"psub3_1":54.5,"psub3_2":51.1,"psub3_3":51.8},{"State_clean":"Akwa Ibom","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":150,"mean_ss":497.1,"mean_pct":67.4,"pl1":1,"pl2":72,"pl3":76,"pl4":1,"psub1_1":67.0,"psub1_2":68.2,"psub2_1":74.6,"psub2_2":65.6,"psub2_3":55.1,"psub2_4":70.6,"psub2_5":62.0,"psub2_6":73.3,"psub3_1":68.0,"psub3_2":68.8,"psub3_3":63.1},{"State_clean":"Akwa Ibom","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":630,"mean_ss":481.7,"mean_pct":53.2,"pl1":61,"pl2":364,"pl3":192,"pl4":13,"psub1_1":52.5,"psub1_2":54.2,"psub2_1":59.3,"psub2_2":50.8,"psub2_3":42.7,"psub2_4":58.1,"psub2_5":48.2,"psub2_6":54.3,"psub3_1":54.1,"psub3_2":52.5,"psub3_3":50.0},{"State_clean":"Akwa Ibom","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":101,"mean_ss":486.1,"mean_pct":56.5,"pl1":2,"pl2":66,"pl3":31,"pl4":2,"psub1_1":56.1,"psub1_2":57.2,"psub2_1":61.9,"psub2_2":54.4,"psub2_3":48.5,"psub2_4":63.5,"psub2_5":47.3,"psub2_6":57.9,"psub3_1":57.8,"psub3_2":53.4,"psub3_3":53.9},{"State_clean":"Akwa Ibom","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":168,"mean_ss":496.5,"mean_pct":65.1,"pl1":2,"pl2":86,"pl3":73,"pl4":7,"psub1_1":64.2,"psub1_2":66.5,"psub2_1":69.8,"psub2_2":62.7,"psub2_3":56.6,"psub2_4":68.9,"psub2_5":59.7,"psub2_6":72.6,"psub3_1":65.6,"psub3_2":67.0,"psub3_3":60.8},{"State_clean":"Akwa Ibom","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":537,"mean_ss":478.7,"mean_pct":50.6,"pl1":54,"pl2":330,"pl3":150,"pl4":3,"psub1_1":50.2,"psub1_2":51.3,"psub2_1":55.9,"psub2_2":48.3,"psub2_3":42.3,"psub2_4":55.4,"psub2_5":45.4,"psub2_6":50.6,"psub3_1":51.4,"psub3_2":49.9,"psub3_3":47.7},{"State_clean":"Anambra","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":1025,"mean_ss":479.1,"mean_pct":50.8,"pl1":88,"pl2":672,"pl3":260,"pl4":5,"psub1_1":50.9,"psub1_2":50.5,"psub2_1":58.1,"psub2_2":49.4,"psub2_3":40.4,"psub2_4":52.4,"psub2_5":47.7,"psub2_6":50.5,"psub3_1":51.8,"psub3_2":50.2,"psub3_3":46.6},{"State_clean":"Anambra","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":719,"mean_ss":477.3,"mean_pct":48.9,"pl1":69,"pl2":484,"pl3":160,"pl4":6,"psub1_1":49.6,"psub1_2":47.8,"psub2_1":56.6,"psub2_2":47.2,"psub2_3":40.2,"psub2_4":48.9,"psub2_5":45.6,"psub2_6":49.2,"psub3_1":49.7,"psub3_2":49.0,"psub3_3":44.7},{"State_clean":"Bauchi","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":137,"mean_ss":479.3,"mean_pct":51.2,"pl1":13,"pl2":95,"pl3":27,"pl4":2,"psub1_1":52.1,"psub1_2":49.8,"psub2_1":59.6,"psub2_2":49.1,"psub2_3":40.9,"psub2_4":48.5,"psub2_5":45.3,"psub2_6":62.4,"psub3_1":52.8,"psub3_2":52.9,"psub3_3":40.8},{"State_clean":"Bauchi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":115,"mean_ss":480.4,"mean_pct":51.9,"pl1":15,"pl2":58,"pl3":39,"pl4":3,"psub1_1":51.5,"psub1_2":52.5,"psub2_1":59.5,"psub2_2":50.8,"psub2_3":39.0,"psub2_4":54.2,"psub2_5":46.5,"psub2_6":59.1,"psub3_1":53.7,"psub3_2":52.8,"psub3_3":43.6},{"State_clean":"Bauchi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":620,"mean_ss":472.7,"mean_pct":45.1,"pl1":63,"pl2":472,"pl3":85,"pl4":0,"psub1_1":47.2,"psub1_2":42.0,"psub2_1":53.1,"psub2_2":45.6,"psub2_3":38.7,"psub2_4":40.9,"psub2_5":37.6,"psub2_6":54.5,"psub3_1":44.5,"psub3_2":47.8,"psub3_3":44.4},{"State_clean":"Bauchi","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":156,"mean_ss":477.3,"mean_pct":49.3,"pl1":15,"pl2":114,"pl3":26,"pl4":1,"psub1_1":51.4,"psub1_2":46.3,"psub2_1":59.7,"psub2_2":49.6,"psub2_3":39.7,"psub2_4":45.1,"psub2_5":38.9,"psub2_6":64.4,"psub3_1":50.7,"psub3_2":51.0,"psub3_3":40.9},{"State_clean":"Bauchi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":149,"mean_ss":483.3,"mean_pct":54.8,"pl1":15,"pl2":80,"pl3":50,"pl4":4,"psub1_1":54.6,"psub1_2":55.0,"psub2_1":63.9,"psub2_2":51.5,"psub2_3":42.3,"psub2_4":57.0,"psub2_5":47.8,"psub2_6":63.1,"psub3_1":56.8,"psub3_2":53.7,"psub3_3":47.2},{"State_clean":"Bauchi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":536,"mean_ss":471.6,"mean_pct":44.2,"pl1":69,"pl2":404,"pl3":63,"pl4":0,"psub1_1":45.1,"psub1_2":42.8,"psub2_1":51.6,"psub2_2":44.1,"psub2_3":35.6,"psub2_4":40.3,"psub2_5":39.8,"psub2_6":56.2,"psub3_1":44.2,"psub3_2":46.7,"psub3_3":40.7},{"State_clean":"Bayelsa","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":146,"mean_ss":482.2,"mean_pct":53.2,"pl1":9,"pl2":92,"pl3":43,"pl4":2,"psub1_1":54.5,"psub1_2":51.3,"psub2_1":60.6,"psub2_2":56.4,"psub2_3":40.5,"psub2_4":54.7,"psub2_5":41.8,"psub2_6":59.9,"psub3_1":53.1,"psub3_2":55.0,"psub3_3":50.5},{"State_clean":"Bayelsa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":116,"mean_ss":507.4,"mean_pct":73.5,"pl1":0,"pl2":38,"pl3":63,"pl4":15,"psub1_1":74.5,"psub1_2":72.1,"psub2_1":78.6,"psub2_2":77.0,"psub2_3":64.0,"psub2_4":77.9,"psub2_5":63.1,"psub2_6":72.4,"psub3_1":72.4,"psub3_2":79.8,"psub3_3":71.0},{"State_clean":"Bayelsa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":605,"mean_ss":478.3,"mean_pct":50.1,"pl1":68,"pl2":378,"pl3":153,"pl4":6,"psub1_1":51.6,"psub1_2":47.9,"psub2_1":57.1,"psub2_2":50.3,"psub2_3":44.0,"psub2_4":52.3,"psub2_5":43.1,"psub2_6":44.3,"psub3_1":49.9,"psub3_2":54.0,"psub3_3":46.4},{"State_clean":"Bayelsa","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":138,"mean_ss":478.3,"mean_pct":50.6,"pl1":17,"pl2":84,"pl3":36,"pl4":1,"psub1_1":53.1,"psub1_2":46.8,"psub2_1":60.6,"psub2_2":53.8,"psub2_3":39.3,"psub2_4":52.1,"psub2_5":35.0,"psub2_6":54.7,"psub3_1":50.1,"psub3_2":54.7,"psub3_3":47.3},{"State_clean":"Bayelsa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":118,"mean_ss":506.1,"mean_pct":73.5,"pl1":2,"pl2":39,"pl3":64,"pl4":13,"psub1_1":75.5,"psub1_2":70.5,"psub2_1":77.9,"psub2_2":76.2,"psub2_3":70.0,"psub2_4":78.4,"psub2_5":60.6,"psub2_6":66.5,"psub3_1":71.6,"psub3_2":79.3,"psub3_3":75.0},{"State_clean":"Bayelsa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":659,"mean_ss":478.0,"mean_pct":49.7,"pl1":77,"pl2":407,"pl3":163,"pl4":12,"psub1_1":51.4,"psub1_2":47.1,"psub2_1":56.4,"psub2_2":50.2,"psub2_3":44.7,"psub2_4":51.0,"psub2_5":42.4,"psub2_6":44.6,"psub3_1":49.1,"psub3_2":53.2,"psub3_3":47.8},{"State_clean":"Benue","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":437,"mean_ss":489.3,"mean_pct":60.1,"pl1":35,"pl2":214,"pl3":182,"pl4":6,"psub1_1":61.3,"psub1_2":58.4,"psub2_1":66.8,"psub2_2":64.0,"psub2_3":50.2,"psub2_4":60.0,"psub2_5":57.3,"psub2_6":55.7,"psub3_1":59.0,"psub3_2":65.8,"psub3_3":57.7},{"State_clean":"Benue","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":77,"mean_ss":487.7,"mean_pct":58.8,"pl1":2,"pl2":48,"pl3":26,"pl4":1,"psub1_1":57.1,"psub1_2":61.4,"psub2_1":62.6,"psub2_2":60.8,"psub2_3":40.6,"psub2_4":65.6,"psub2_5":57.8,"psub2_6":55.8,"psub3_1":59.1,"psub3_2":62.8,"psub3_3":52.5},{"State_clean":"Benue","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":340,"mean_ss":486.1,"mean_pct":57.6,"pl1":21,"pl2":179,"pl3":136,"pl4":4,"psub1_1":58.6,"psub1_2":56.2,"psub2_1":64.7,"psub2_2":58.4,"psub2_3":46.7,"psub2_4":60.9,"psub2_5":50.5,"psub2_6":53.1,"psub3_1":57.4,"psub3_2":61.2,"psub3_3":55.0},{"State_clean":"Benue","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":430,"mean_ss":489.7,"mean_pct":60.9,"pl1":30,"pl2":195,"pl3":202,"pl4":3,"psub1_1":62.8,"psub1_2":58.1,"psub2_1":67.5,"psub2_2":66.0,"psub2_3":51.7,"psub2_4":60.5,"psub2_5":56.5,"psub2_6":54.0,"psub3_1":59.2,"psub3_2":68.1,"psub3_3":59.2},{"State_clean":"Benue","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":95,"mean_ss":481.1,"mean_pct":52.4,"pl1":4,"pl2":73,"pl3":17,"pl4":1,"psub1_1":50.8,"psub1_2":54.8,"psub2_1":56.7,"psub2_2":50.5,"psub2_3":38.4,"psub2_4":60.4,"psub2_5":46.3,"psub2_6":55.3,"psub3_1":52.6,"psub3_2":58.5,"psub3_3":43.6},{"State_clean":"Benue","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":406,"mean_ss":488.2,"mean_pct":59.5,"pl1":29,"pl2":196,"pl3":174,"pl4":7,"psub1_1":60.5,"psub1_2":57.9,"psub2_1":65.6,"psub2_2":59.5,"psub2_3":50.7,"psub2_4":63.2,"psub2_5":52.6,"psub2_6":52.8,"psub3_1":59.0,"psub3_2":63.5,"psub3_3":56.8},{"State_clean":"Borno","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":133,"mean_ss":489.6,"mean_pct":61.2,"pl1":7,"pl2":71,"pl3":54,"pl4":1,"psub1_1":63.6,"psub1_2":57.5,"psub2_1":72.1,"psub2_2":66.2,"psub2_3":46.1,"psub2_4":54.6,"psub2_5":56.6,"psub2_6":68.0,"psub3_1":59.6,"psub3_2":62.7,"psub3_3":65.2},{"State_clean":"Borno","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":134,"mean_ss":483.0,"mean_pct":55.0,"pl1":10,"pl2":74,"pl3":50,"pl4":0,"psub1_1":57.0,"psub1_2":51.8,"psub2_1":62.9,"psub2_2":57.7,"psub2_3":46.6,"psub2_4":52.2,"psub2_5":47.9,"psub2_6":58.2,"psub3_1":54.2,"psub3_2":56.0,"psub3_3":57.1},{"State_clean":"Borno","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":573,"mean_ss":470.9,"mean_pct":44.7,"pl1":111,"pl2":337,"pl3":125,"pl4":0,"psub1_1":47.1,"psub1_2":41.1,"psub2_1":55.5,"psub2_2":44.2,"psub2_3":37.1,"psub2_4":42.4,"psub2_5":37.0,"psub2_6":45.3,"psub3_1":45.3,"psub3_2":45.7,"psub3_3":41.3},{"State_clean":"Borno","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":126,"mean_ss":491.8,"mean_pct":62.8,"pl1":1,"pl2":76,"pl3":49,"pl4":0,"psub1_1":63.4,"psub1_2":61.7,"psub2_1":71.4,"psub2_2":65.4,"psub2_3":46.2,"psub2_4":59.0,"psub2_5":63.1,"psub2_6":67.1,"psub3_1":62.1,"psub3_2":63.0,"psub3_3":65.6},{"State_clean":"Borno","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":142,"mean_ss":475.0,"mean_pct":48.1,"pl1":20,"pl2":88,"pl3":34,"pl4":0,"psub1_1":47.8,"psub1_2":48.5,"psub2_1":57.7,"psub2_2":48.1,"psub2_3":31.9,"psub2_4":49.8,"psub2_5":44.5,"psub2_6":52.8,"psub3_1":50.0,"psub3_2":48.4,"psub3_3":40.1},{"State_clean":"Borno","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":548,"mean_ss":472.3,"mean_pct":46.0,"pl1":91,"pl2":345,"pl3":112,"pl4":0,"psub1_1":47.6,"psub1_2":43.6,"psub2_1":55.7,"psub2_2":47.3,"psub2_3":35.3,"psub2_4":43.3,"psub2_5":41.5,"psub2_6":48.6,"psub3_1":46.6,"psub3_2":45.4,"psub3_3":44.7},{"State_clean":"Cross River","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":144,"mean_ss":482.4,"mean_pct":54.0,"pl1":10,"pl2":87,"pl3":47,"pl4":0,"psub1_1":54.2,"psub1_2":53.6,"psub2_1":60.8,"psub2_2":55.2,"psub2_3":41.5,"psub2_4":59.7,"psub2_5":46.2,"psub2_6":50.3,"psub3_1":54.5,"psub3_2":54.5,"psub3_3":50.8},{"State_clean":"Cross River","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":153,"mean_ss":495.2,"mean_pct":65.4,"pl1":10,"pl2":55,"pl3":84,"pl4":4,"psub1_1":64.0,"psub1_2":67.5,"psub2_1":71.5,"psub2_2":65.4,"psub2_3":49.8,"psub2_4":68.6,"psub2_5":65.0,"psub2_6":69.3,"psub3_1":66.4,"psub3_2":66.5,"psub3_3":60.1},{"State_clean":"Cross River","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":578,"mean_ss":476.5,"mean_pct":48.6,"pl1":66,"pl2":378,"pl3":134,"pl4":0,"psub1_1":48.6,"psub1_2":48.6,"psub2_1":55.9,"psub2_2":46.8,"psub2_3":37.9,"psub2_4":52.4,"psub2_5":43.8,"psub2_6":47.1,"psub3_1":49.8,"psub3_2":47.7,"psub3_3":44.0},{"State_clean":"Cross River","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":135,"mean_ss":479.3,"mean_pct":51.3,"pl1":15,"pl2":80,"pl3":40,"pl4":0,"psub1_1":50.3,"psub1_2":52.8,"psub2_1":56.0,"psub2_2":50.3,"psub2_3":40.6,"psub2_4":58.5,"psub2_5":46.5,"psub2_6":48.1,"psub3_1":52.3,"psub3_2":52.9,"psub3_3":44.6},{"State_clean":"Cross River","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":146,"mean_ss":494.3,"mean_pct":64.0,"pl1":5,"pl2":63,"pl3":73,"pl4":5,"psub1_1":63.6,"psub1_2":64.7,"psub2_1":68.1,"psub2_2":66.8,"psub2_3":52.4,"psub2_4":66.6,"psub2_5":62.8,"psub2_6":62.7,"psub3_1":63.4,"psub3_2":67.7,"psub3_3":63.4},{"State_clean":"Cross River","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":558,"mean_ss":475.2,"mean_pct":47.1,"pl1":56,"pl2":392,"pl3":108,"pl4":2,"psub1_1":48.2,"psub1_2":45.5,"psub2_1":54.3,"psub2_2":46.3,"psub2_3":39.6,"psub2_4":50.1,"psub2_5":40.5,"psub2_6":41.6,"psub3_1":47.5,"psub3_2":48.3,"psub3_3":43.6},{"State_clean":"Delta","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":143,"mean_ss":476.0,"mean_pct":47.4,"pl1":4,"pl2":113,"pl3":26,"pl4":0,"psub1_1":49.8,"psub1_2":43.9,"psub2_1":58.4,"psub2_2":46.9,"psub2_3":38.6,"psub2_4":48.4,"psub2_5":39.9,"psub2_6":38.8,"psub3_1":47.1,"psub3_2":49.3,"psub3_3":46.0},{"State_clean":"Delta","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":138,"mean_ss":495.4,"mean_pct":65.7,"pl1":4,"pl2":67,"pl3":66,"pl4":1,"psub1_1":66.3,"psub1_2":64.9,"psub2_1":70.6,"psub2_2":71.6,"psub2_3":53.2,"psub2_4":68.5,"psub2_5":62.0,"psub2_6":59.8,"psub3_1":65.4,"psub3_2":69.6,"psub3_3":63.5},{"State_clean":"Delta","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":675,"mean_ss":485.1,"mean_pct":56.0,"pl1":24,"pl2":435,"pl3":206,"pl4":10,"psub1_1":57.9,"psub1_2":53.0,"psub2_1":65.4,"psub2_2":57.0,"psub2_3":46.2,"psub2_4":57.7,"psub2_5":48.4,"psub2_6":48.1,"psub3_1":55.6,"psub3_2":60.0,"psub3_3":52.5},{"State_clean":"Delta","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":157,"mean_ss":479.9,"mean_pct":49.8,"pl1":11,"pl2":109,"pl3":31,"pl4":6,"psub1_1":51.9,"psub1_2":46.6,"psub2_1":59.2,"psub2_2":48.4,"psub2_3":43.2,"psub2_4":49.9,"psub2_5":43.9,"psub2_6":42.0,"psub3_1":49.7,"psub3_2":49.6,"psub3_3":49.8},{"State_clean":"Delta","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":130,"mean_ss":490.5,"mean_pct":61.9,"pl1":5,"pl2":66,"pl3":59,"pl4":0,"psub1_1":62.6,"psub1_2":60.8,"psub2_1":67.6,"psub2_2":65.1,"psub2_3":51.6,"psub2_4":63.7,"psub2_5":59.4,"psub2_6":55.0,"psub3_1":61.2,"psub3_2":66.6,"psub3_3":59.7},{"State_clean":"Delta","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":514,"mean_ss":483.4,"mean_pct":54.3,"pl1":28,"pl2":333,"pl3":144,"pl4":9,"psub1_1":56.7,"psub1_2":50.8,"psub2_1":63.6,"psub2_2":55.6,"psub2_3":45.9,"psub2_4":54.3,"psub2_5":45.8,"psub2_6":50.0,"psub3_1":53.8,"psub3_2":57.8,"psub3_3":52.0},{"State_clean":"Ebonyi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":900,"mean_ss":480.9,"mean_pct":52.5,"pl1":83,"pl2":556,"pl3":253,"pl4":8,"psub1_1":54.4,"psub1_2":49.8,"psub2_1":62.6,"psub2_2":52.4,"psub2_3":43.0,"psub2_4":53.0,"psub2_5":46.3,"psub2_6":46.9,"psub3_1":52.4,"psub3_2":56.3,"psub3_3":48.3},{"State_clean":"Ebonyi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":876,"mean_ss":479.0,"mean_pct":50.9,"pl1":72,"pl2":574,"pl3":226,"pl4":4,"psub1_1":52.2,"psub1_2":49.0,"psub2_1":59.3,"psub2_2":50.0,"psub2_3":42.6,"psub2_4":53.1,"psub2_5":43.9,"psub2_6":46.9,"psub3_1":50.9,"psub3_2":54.7,"psub3_3":46.1},{"State_clean":"Edo","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":167,"mean_ss":470.9,"mean_pct":43.1,"pl1":20,"pl2":127,"pl3":20,"pl4":0,"psub1_1":44.7,"psub1_2":40.7,"psub2_1":51.4,"psub2_2":43.0,"psub2_3":35.0,"psub2_4":45.1,"psub2_5":34.9,"psub2_6":39.2,"psub3_1":43.5,"psub3_2":44.9,"psub3_3":39.5},{"State_clean":"Edo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":152,"mean_ss":490.9,"mean_pct":61.4,"pl1":6,"pl2":78,"pl3":65,"pl4":3,"psub1_1":60.6,"psub1_2":62.7,"psub2_1":69.3,"psub2_2":59.0,"psub2_3":48.8,"psub2_4":67.7,"psub2_5":56.9,"psub2_6":59.2,"psub3_1":63.4,"psub3_2":58.8,"psub3_3":56.6},{"State_clean":"Edo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":648,"mean_ss":474.2,"mean_pct":46.1,"pl1":62,"pl2":491,"pl3":95,"pl4":0,"psub1_1":46.2,"psub1_2":46.0,"psub2_1":54.8,"psub2_2":46.2,"psub2_3":31.9,"psub2_4":49.6,"psub2_5":42.0,"psub2_6":43.5,"psub3_1":47.6,"psub3_2":45.0,"psub3_3":41.3},{"State_clean":"Edo","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":130,"mean_ss":464.1,"mean_pct":37.2,"pl1":29,"pl2":90,"pl3":11,"pl4":0,"psub1_1":39.0,"psub1_2":34.4,"psub2_1":46.2,"psub2_2":35.4,"psub2_3":31.5,"psub2_4":35.4,"psub2_5":29.0,"psub2_6":42.3,"psub3_1":38.0,"psub3_2":38.3,"psub3_3":32.8},{"State_clean":"Edo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":147,"mean_ss":487.4,"mean_pct":58.4,"pl1":10,"pl2":79,"pl3":56,"pl4":2,"psub1_1":60.0,"psub1_2":56.1,"psub2_1":67.5,"psub2_2":59.4,"psub2_3":48.4,"psub2_4":62.4,"psub2_5":49.8,"psub2_6":49.7,"psub3_1":58.5,"psub3_2":60.2,"psub3_3":56.2},{"State_clean":"Edo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":542,"mean_ss":471.1,"mean_pct":43.4,"pl1":62,"pl2":418,"pl3":62,"pl4":0,"psub1_1":44.4,"psub1_2":41.9,"psub2_1":52.3,"psub2_2":41.4,"psub2_3":34.5,"psub2_4":44.1,"psub2_5":37.4,"psub2_6":44.1,"psub3_1":44.4,"psub3_2":42.6,"psub3_3":40.0},{"State_clean":"Ekiti","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":138,"mean_ss":484.8,"mean_pct":56.4,"pl1":4,"pl2":84,"pl3":50,"pl4":0,"psub1_1":57.9,"psub1_2":54.2,"psub2_1":64.8,"psub2_2":55.6,"psub2_3":49.7,"psub2_4":57.0,"psub2_5":45.3,"psub2_6":63.4,"psub3_1":56.3,"psub3_2":58.6,"psub3_3":54.5},{"State_clean":"Ekiti","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":150,"mean_ss":489.0,"mean_pct":59.8,"pl1":2,"pl2":88,"pl3":60,"pl4":0,"psub1_1":62.2,"psub1_2":56.1,"psub2_1":68.7,"psub2_2":60.7,"psub2_3":53.0,"psub2_4":60.3,"psub2_5":48.8,"psub2_6":58.0,"psub3_1":59.3,"psub3_2":62.0,"psub3_3":58.8},{"State_clean":"Ekiti","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":578,"mean_ss":469.5,"mean_pct":42.1,"pl1":89,"pl2":402,"pl3":87,"pl4":0,"psub1_1":42.8,"psub1_2":41.0,"psub2_1":50.6,"psub2_2":40.1,"psub2_3":32.6,"psub2_4":44.4,"psub2_5":35.4,"psub2_6":42.0,"psub3_1":43.1,"psub3_2":40.7,"psub3_3":39.0},{"State_clean":"Ekiti","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":157,"mean_ss":486.6,"mean_pct":58.2,"pl1":8,"pl2":86,"pl3":63,"pl4":0,"psub1_1":58.6,"psub1_2":57.6,"psub2_1":67.1,"psub2_2":54.5,"psub2_3":49.4,"psub2_4":59.2,"psub2_5":50.6,"psub2_6":66.6,"psub3_1":59.3,"psub3_2":58.0,"psub3_3":54.1},{"State_clean":"Ekiti","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":148,"mean_ss":491.6,"mean_pct":60.9,"pl1":3,"pl2":85,"pl3":54,"pl4":6,"psub1_1":61.9,"psub1_2":59.5,"psub2_1":69.4,"psub2_2":60.3,"psub2_3":51.9,"psub2_4":61.5,"psub2_5":55.4,"psub2_6":61.5,"psub3_1":61.7,"psub3_2":60.8,"psub3_3":57.6},{"State_clean":"Ekiti","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":548,"mean_ss":467.9,"mean_pct":40.7,"pl1":90,"pl2":385,"pl3":72,"pl4":1,"psub1_1":40.9,"psub1_2":40.3,"psub2_1":47.6,"psub2_2":39.3,"psub2_3":31.9,"psub2_4":43.8,"psub2_5":35.2,"psub2_6":39.9,"psub3_1":41.7,"psub3_2":38.7,"psub3_3":38.3},{"State_clean":"Enugu","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":902,"mean_ss":482.3,"mean_pct":53.9,"pl1":75,"pl2":528,"pl3":293,"pl4":6,"psub1_1":55.6,"psub1_2":51.4,"psub2_1":62.9,"psub2_2":53.7,"psub2_3":45.6,"psub2_4":56.1,"psub2_5":45.0,"psub2_6":49.9,"psub3_1":54.0,"psub3_2":57.0,"psub3_3":49.4},{"State_clean":"Enugu","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":769,"mean_ss":481.2,"mean_pct":53.0,"pl1":75,"pl2":438,"pl3":245,"pl4":11,"psub1_1":54.8,"psub1_2":50.3,"psub2_1":62.3,"psub2_2":53.0,"psub2_3":44.2,"psub2_4":55.4,"psub2_5":44.4,"psub2_6":46.9,"psub3_1":53.0,"psub3_2":56.2,"psub3_3":49.3},{"State_clean":"FCT","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":128,"mean_ss":480.1,"mean_pct":52.2,"pl1":16,"pl2":73,"pl3":36,"pl4":3,"psub1_1":50.7,"psub1_2":54.5,"psub2_1":55.6,"psub2_2":50.1,"psub2_3":41.8,"psub2_4":57.9,"psub2_5":48.6,"psub2_6":55.9,"psub3_1":53.4,"psub3_2":50.8,"psub3_3":48.5},{"State_clean":"FCT","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":86,"mean_ss":501.7,"mean_pct":63.6,"pl1":6,"pl2":40,"pl3":24,"pl4":16,"psub1_1":64.5,"psub1_2":62.2,"psub2_1":71.2,"psub2_2":62.8,"psub2_3":54.1,"psub2_4":65.5,"psub2_5":58.7,"psub2_6":59.3,"psub3_1":65.1,"psub3_2":61.4,"psub3_3":59.2},{"State_clean":"FCT","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":681,"mean_ss":487.4,"mean_pct":58.3,"pl1":26,"pl2":393,"pl3":249,"pl4":13,"psub1_1":58.5,"psub1_2":57.9,"psub2_1":66.9,"psub2_2":56.3,"psub2_3":47.2,"psub2_4":61.7,"psub2_5":50.4,"psub2_6":61.6,"psub3_1":59.1,"psub3_2":57.6,"psub3_3":55.3},{"State_clean":"FCT","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":142,"mean_ss":481.3,"mean_pct":53.7,"pl1":20,"pl2":74,"pl3":46,"pl4":2,"psub1_1":52.3,"psub1_2":55.8,"psub2_1":58.2,"psub2_2":48.2,"psub2_3":45.9,"psub2_4":59.3,"psub2_5":50.0,"psub2_6":56.7,"psub3_1":55.2,"psub3_2":53.1,"psub3_3":46.9},{"State_clean":"FCT","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":75,"mean_ss":488.5,"mean_pct":56.9,"pl1":6,"pl2":39,"pl3":25,"pl4":5,"psub1_1":57.6,"psub1_2":55.9,"psub2_1":63.9,"psub2_2":58.2,"psub2_3":45.9,"psub2_4":59.8,"psub2_5":55.7,"psub2_6":44.7,"psub3_1":58.0,"psub3_2":54.1,"psub3_3":55.3},{"State_clean":"FCT","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":542,"mean_ss":485.0,"mean_pct":56.0,"pl1":24,"pl2":339,"pl3":172,"pl4":7,"psub1_1":57.0,"psub1_2":54.4,"psub2_1":63.6,"psub2_2":58.0,"psub2_3":44.4,"psub2_4":57.6,"psub2_5":48.9,"psub2_6":55.7,"psub3_1":55.7,"psub3_2":58.0,"psub3_3":54.7},{"State_clean":"Gombe","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":133,"mean_ss":488.4,"mean_pct":60.0,"pl1":5,"pl2":82,"pl3":46,"pl4":0,"psub1_1":61.4,"psub1_2":57.8,"psub2_1":69.8,"psub2_2":57.7,"psub2_3":50.2,"psub2_4":52.6,"psub2_5":56.0,"psub2_6":77.1,"psub3_1":59.2,"psub3_2":66.5,"psub3_3":55.3},{"State_clean":"Gombe","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":116,"mean_ss":481.5,"mean_pct":52.0,"pl1":13,"pl2":59,"pl3":39,"pl4":5,"psub1_1":54.4,"psub1_2":48.4,"psub2_1":62.9,"psub2_2":53.4,"psub2_3":41.6,"psub2_4":48.0,"psub2_5":49.4,"psub2_6":47.8,"psub3_1":51.9,"psub3_2":53.4,"psub3_3":50.1},{"State_clean":"Gombe","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":459,"mean_ss":490.6,"mean_pct":61.5,"pl1":11,"pl2":267,"pl3":179,"pl4":2,"psub1_1":64.9,"psub1_2":56.4,"psub2_1":69.4,"psub2_2":63.8,"psub2_3":57.9,"psub2_4":54.0,"psub2_5":52.0,"psub2_6":72.5,"psub3_1":60.1,"psub3_2":67.7,"psub3_3":59.5},{"State_clean":"Gombe","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":124,"mean_ss":484.0,"mean_pct":56.3,"pl1":11,"pl2":75,"pl3":38,"pl4":0,"psub1_1":56.8,"psub1_2":55.4,"psub2_1":65.6,"psub2_2":56.8,"psub2_3":39.2,"psub2_4":53.0,"psub2_5":52.4,"psub2_6":69.0,"psub3_1":55.6,"psub3_2":62.0,"psub3_3":51.9},{"State_clean":"Gombe","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":145,"mean_ss":502.7,"mean_pct":69.2,"pl1":8,"pl2":52,"pl3":71,"pl4":14,"psub1_1":70.5,"psub1_2":67.4,"psub2_1":76.3,"psub2_2":72.1,"psub2_3":58.3,"psub2_4":67.0,"psub2_5":66.2,"psub2_6":70.7,"psub3_1":69.2,"psub3_2":71.5,"psub3_3":66.7},{"State_clean":"Gombe","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":447,"mean_ss":494.0,"mean_pct":63.8,"pl1":5,"pl2":250,"pl3":177,"pl4":15,"psub1_1":66.6,"psub1_2":59.7,"psub2_1":71.8,"psub2_2":62.8,"psub2_3":60.2,"psub2_4":57.7,"psub2_5":54.3,"psub2_6":76.5,"psub3_1":63.1,"psub3_2":68.5,"psub3_3":60.7},{"State_clean":"Imo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":965,"mean_ss":497.5,"mean_pct":66.8,"pl1":41,"pl2":363,"pl3":518,"pl4":43,"psub1_1":67.5,"psub1_2":65.9,"psub2_1":73.9,"psub2_2":67.5,"psub2_3":56.5,"psub2_4":71.2,"psub2_5":59.5,"psub2_6":62.7,"psub3_1":66.6,"psub3_2":68.5,"psub3_3":65.8},{"State_clean":"Imo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":776,"mean_ss":496.5,"mean_pct":65.4,"pl1":30,"pl2":338,"pl3":372,"pl4":36,"psub1_1":66.2,"psub1_2":64.2,"psub2_1":73.1,"psub2_2":65.5,"psub2_3":55.6,"psub2_4":69.5,"psub2_5":57.5,"psub2_6":61.9,"psub3_1":65.6,"psub3_2":66.2,"psub3_3":63.7},{"State_clean":"Jigawa","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":103,"mean_ss":477.7,"mean_pct":50.4,"pl1":14,"pl2":60,"pl3":29,"pl4":0,"psub1_1":51.1,"psub1_2":49.4,"psub2_1":59.7,"psub2_2":53.8,"psub2_3":33.1,"psub2_4":44.0,"psub2_5":50.0,"psub2_6":64.1,"psub3_1":51.2,"psub3_2":53.9,"psub3_3":42.8},{"State_clean":"Jigawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":147,"mean_ss":491.9,"mean_pct":61.4,"pl1":12,"pl2":65,"pl3":58,"pl4":12,"psub1_1":61.1,"psub1_2":61.8,"psub2_1":65.9,"psub2_2":63.9,"psub2_3":49.0,"psub2_4":61.7,"psub2_5":54.6,"psub2_6":76.9,"psub3_1":61.4,"psub3_2":64.5,"psub3_3":58.1},{"State_clean":"Jigawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":519,"mean_ss":477.5,"mean_pct":50.7,"pl1":80,"pl2":267,"pl3":172,"pl4":0,"psub1_1":52.4,"psub1_2":48.0,"psub2_1":58.4,"psub2_2":52.1,"psub2_3":43.2,"psub2_4":46.3,"psub2_5":47.3,"psub2_6":54.8,"psub3_1":49.9,"psub3_2":53.6,"psub3_3":50.8},{"State_clean":"Jigawa","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":121,"mean_ss":473.1,"mean_pct":45.8,"pl1":17,"pl2":82,"pl3":22,"pl4":0,"psub1_1":47.6,"psub1_2":43.3,"psub2_1":56.8,"psub2_2":45.2,"psub2_3":33.5,"psub2_4":44.5,"psub2_5":37.0,"psub2_6":52.1,"psub3_1":46.8,"psub3_2":48.3,"psub3_3":38.2},{"State_clean":"Jigawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":122,"mean_ss":488.4,"mean_pct":59.9,"pl1":10,"pl2":51,"pl3":58,"pl4":3,"psub1_1":61.2,"psub1_2":57.8,"psub2_1":67.2,"psub2_2":64.9,"psub2_3":47.6,"psub2_4":55.3,"psub2_5":53.7,"psub2_6":73.4,"psub3_1":59.1,"psub3_2":64.9,"psub3_3":57.8},{"State_clean":"Jigawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":576,"mean_ss":480.2,"mean_pct":52.9,"pl1":63,"pl2":315,"pl3":198,"pl4":0,"psub1_1":54.0,"psub1_2":51.3,"psub2_1":60.8,"psub2_2":52.8,"psub2_3":43.5,"psub2_4":50.5,"psub2_5":48.7,"psub2_6":58.5,"psub3_1":52.8,"psub3_2":53.3,"psub3_3":53.0},{"State_clean":"Kaduna","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":145,"mean_ss":504.9,"mean_pct":71.5,"pl1":0,"pl2":58,"pl3":72,"pl4":15,"psub1_1":70.7,"psub1_2":72.6,"psub2_1":76.7,"psub2_2":69.4,"psub2_3":61.3,"psub2_4":76.3,"psub2_5":65.2,"psub2_6":76.6,"psub3_1":72.1,"psub3_2":75.6,"psub3_3":63.6},{"State_clean":"Kaduna","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":158,"mean_ss":497.3,"mean_pct":66.2,"pl1":5,"pl2":67,"pl3":79,"pl4":7,"psub1_1":66.2,"psub1_2":66.2,"psub2_1":73.2,"psub2_2":64.3,"psub2_3":57.5,"psub2_4":67.4,"psub2_5":57.1,"psub2_6":80.7,"psub3_1":66.8,"psub3_2":65.3,"psub3_3":64.4},{"State_clean":"Kaduna","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":621,"mean_ss":490.7,"mean_pct":60.9,"pl1":25,"pl2":344,"pl3":239,"pl4":13,"psub1_1":62.2,"psub1_2":58.9,"psub2_1":68.2,"psub2_2":63.6,"psub2_3":50.4,"psub2_4":60.9,"psub2_5":52.5,"psub2_6":65.7,"psub3_1":60.2,"psub3_2":65.5,"psub3_3":58.0},{"State_clean":"Kaduna","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":148,"mean_ss":501.5,"mean_pct":69.5,"pl1":0,"pl2":60,"pl3":79,"pl4":9,"psub1_1":68.6,"psub1_2":70.9,"psub2_1":75.3,"psub2_2":69.1,"psub2_3":56.8,"psub2_4":72.6,"psub2_5":66.6,"psub2_6":74.3,"psub3_1":70.4,"psub3_2":73.3,"psub3_3":60.9},{"State_clean":"Kaduna","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":153,"mean_ss":492.6,"mean_pct":62.8,"pl1":3,"pl2":79,"pl3":67,"pl4":4,"psub1_1":62.9,"psub1_2":62.7,"psub2_1":69.6,"psub2_2":61.7,"psub2_3":53.0,"psub2_4":65.5,"psub2_5":53.4,"psub2_6":72.9,"psub3_1":63.6,"psub3_2":62.2,"psub3_3":60.3},{"State_clean":"Kaduna","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":498,"mean_ss":492.2,"mean_pct":62.2,"pl1":12,"pl2":274,"pl3":203,"pl4":9,"psub1_1":63.9,"psub1_2":59.5,"psub2_1":70.1,"psub2_2":65.1,"psub2_3":51.6,"psub2_4":60.8,"psub2_5":53.2,"psub2_6":68.5,"psub3_1":61.5,"psub3_2":67.2,"psub3_3":59.6},{"State_clean":"Kano","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":141,"mean_ss":490.6,"mean_pct":60.4,"pl1":6,"pl2":85,"pl3":47,"pl4":3,"psub1_1":65.6,"psub1_2":52.7,"psub2_1":69.9,"psub2_2":67.2,"psub2_3":56.3,"psub2_4":51.5,"psub2_5":50.4,"psub2_6":61.0,"psub3_1":57.4,"psub3_2":71.3,"psub3_3":61.2},{"State_clean":"Kano","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":145,"mean_ss":501.0,"mean_pct":68.1,"pl1":5,"pl2":53,"pl3":76,"pl4":11,"psub1_1":68.9,"psub1_2":66.9,"psub2_1":76.5,"psub2_2":68.2,"psub2_3":59.1,"psub2_4":68.3,"psub2_5":58.6,"psub2_6":79.3,"psub3_1":68.2,"psub3_2":68.4,"psub3_3":66.9},{"State_clean":"Kano","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":580,"mean_ss":487.4,"mean_pct":58.7,"pl1":33,"pl2":313,"pl3":231,"pl4":3,"psub1_1":61.6,"psub1_2":54.4,"psub2_1":67.3,"psub2_2":62.4,"psub2_3":51.9,"psub2_4":53.4,"psub2_5":51.8,"psub2_6":62.4,"psub3_1":57.4,"psub3_2":62.4,"psub3_3":59.5},{"State_clean":"Kano","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":155,"mean_ss":489.2,"mean_pct":59.6,"pl1":5,"pl2":94,"pl3":53,"pl4":3,"psub1_1":62.8,"psub1_2":54.9,"psub2_1":67.2,"psub2_2":66.6,"psub2_3":50.1,"psub2_4":51.3,"psub2_5":56.8,"psub2_6":61.9,"psub3_1":57.9,"psub3_2":66.3,"psub3_3":59.6},{"State_clean":"Kano","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":153,"mean_ss":492.9,"mean_pct":61.2,"pl1":9,"pl2":72,"pl3":57,"pl4":15,"psub1_1":61.7,"psub1_2":60.5,"psub2_1":68.5,"psub2_2":57.7,"psub2_3":55.8,"psub2_4":63.4,"psub2_5":51.0,"psub2_6":70.9,"psub3_1":62.1,"psub3_2":61.0,"psub3_3":57.9},{"State_clean":"Kano","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":608,"mean_ss":484.5,"mean_pct":56.1,"pl1":24,"pl2":395,"pl3":189,"pl4":0,"psub1_1":60.1,"psub1_2":50.1,"psub2_1":65.8,"psub2_2":59.6,"psub2_3":51.2,"psub2_4":49.8,"psub2_5":44.8,"psub2_6":61.3,"psub3_1":54.8,"psub3_2":60.5,"psub3_3":57.2},{"State_clean":"Katsina","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":144,"mean_ss":487.4,"mean_pct":58.8,"pl1":8,"pl2":78,"pl3":58,"pl4":0,"psub1_1":63.9,"psub1_2":51.2,"psub2_1":70.6,"psub2_2":64.2,"psub2_3":52.0,"psub2_4":46.2,"psub2_5":46.2,"psub2_6":76.0,"psub3_1":56.5,"psub3_2":66.0,"psub3_3":58.5},{"State_clean":"Katsina","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":136,"mean_ss":497.5,"mean_pct":68.0,"pl1":2,"pl2":67,"pl3":66,"pl4":1,"psub1_1":70.2,"psub1_2":64.6,"psub2_1":78.6,"psub2_2":69.8,"psub2_3":59.3,"psub2_4":62.1,"psub2_5":60.5,"psub2_6":80.1,"psub3_1":68.0,"psub3_2":68.4,"psub3_3":68.0},{"State_clean":"Katsina","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":560,"mean_ss":495.1,"mean_pct":66.0,"pl1":17,"pl2":243,"pl3":291,"pl4":9,"psub1_1":69.8,"psub1_2":60.3,"psub2_1":73.9,"psub2_2":70.4,"psub2_3":62.2,"psub2_4":56.5,"psub2_5":61.2,"psub2_6":69.7,"psub3_1":64.0,"psub3_2":72.2,"psub3_3":67.6},{"State_clean":"Katsina","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":165,"mean_ss":491.1,"mean_pct":61.8,"pl1":7,"pl2":90,"pl3":65,"pl4":3,"psub1_1":66.6,"psub1_2":54.5,"psub2_1":73.9,"psub2_2":65.9,"psub2_3":52.1,"psub2_4":50.6,"psub2_5":49.5,"psub2_6":76.4,"psub3_1":59.4,"psub3_2":71.9,"psub3_3":58.7},{"State_clean":"Katsina","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":156,"mean_ss":498.9,"mean_pct":68.9,"pl1":5,"pl2":67,"pl3":79,"pl4":5,"psub1_1":72.4,"psub1_2":63.6,"psub2_1":78.1,"psub2_2":73.2,"psub2_3":61.5,"psub2_4":63.0,"psub2_5":59.5,"psub2_6":73.7,"psub3_1":67.5,"psub3_2":70.8,"psub3_3":73.5},{"State_clean":"Katsina","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":554,"mean_ss":498.8,"mean_pct":69.0,"pl1":7,"pl2":227,"pl3":305,"pl4":15,"psub1_1":72.5,"psub1_2":63.8,"psub2_1":76.4,"psub2_2":74.7,"psub2_3":63.3,"psub2_4":60.6,"psub2_5":66.6,"psub2_6":67.9,"psub3_1":67.1,"psub3_2":75.9,"psub3_3":69.9},{"State_clean":"Kebbi","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":149,"mean_ss":497.2,"mean_pct":67.8,"pl1":0,"pl2":60,"pl3":86,"pl4":3,"psub1_1":70.2,"psub1_2":64.0,"psub2_1":74.2,"psub2_2":74.6,"psub2_3":57.2,"psub2_4":68.1,"psub2_5":57.2,"psub2_6":65.4,"psub3_1":65.8,"psub3_2":73.4,"psub3_3":69.7},{"State_clean":"Kebbi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":143,"mean_ss":496.8,"mean_pct":67.1,"pl1":3,"pl2":64,"pl3":74,"pl4":2,"psub1_1":68.7,"psub1_2":64.7,"psub2_1":75.0,"psub2_2":70.6,"psub2_3":56.0,"psub2_4":66.0,"psub2_5":62.9,"psub2_6":64.3,"psub3_1":66.8,"psub3_2":70.9,"psub3_3":64.6},{"State_clean":"Kebbi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":606,"mean_ss":496.2,"mean_pct":66.4,"pl1":9,"pl2":276,"pl3":309,"pl4":12,"psub1_1":69.1,"psub1_2":62.4,"psub2_1":73.7,"psub2_2":71.3,"psub2_3":58.9,"psub2_4":66.8,"psub2_5":56.9,"psub2_6":60.3,"psub3_1":64.7,"psub3_2":72.1,"psub3_3":67.5},{"State_clean":"Kebbi","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":149,"mean_ss":493.4,"mean_pct":63.8,"pl1":1,"pl2":75,"pl3":70,"pl4":3,"psub1_1":65.0,"psub1_2":61.9,"psub2_1":70.1,"psub2_2":66.9,"psub2_3":54.2,"psub2_4":66.3,"psub2_5":51.7,"psub2_6":68.8,"psub3_1":63.1,"psub3_2":68.3,"psub3_3":61.2},{"State_clean":"Kebbi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":153,"mean_ss":495.5,"mean_pct":65.8,"pl1":5,"pl2":66,"pl3":77,"pl4":5,"psub1_1":65.9,"psub1_2":65.6,"psub2_1":71.1,"psub2_2":68.9,"psub2_3":53.0,"psub2_4":67.3,"psub2_5":62.9,"psub2_6":65.7,"psub3_1":65.3,"psub3_2":71.4,"psub3_3":61.9},{"State_clean":"Kebbi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":555,"mean_ss":494.9,"mean_pct":65.4,"pl1":5,"pl2":299,"pl3":240,"pl4":11,"psub1_1":68.1,"psub1_2":61.3,"psub2_1":72.6,"psub2_2":70.4,"psub2_3":57.3,"psub2_4":63.8,"psub2_5":57.2,"psub2_6":62.3,"psub3_1":63.7,"psub3_2":71.6,"psub3_3":65.3},{"State_clean":"Kogi","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":150,"mean_ss":498.7,"mean_pct":69.0,"pl1":3,"pl2":59,"pl3":85,"pl4":3,"psub1_1":71.3,"psub1_2":65.6,"psub2_1":77.4,"psub2_2":71.6,"psub2_3":59.8,"psub2_4":64.8,"psub2_5":61.8,"psub2_6":75.7,"psub3_1":68.3,"psub3_2":74.5,"psub3_3":65.5},{"State_clean":"Kogi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":147,"mean_ss":486.2,"mean_pct":57.8,"pl1":7,"pl2":80,"pl3":60,"pl4":0,"psub1_1":59.0,"psub1_2":55.9,"psub2_1":65.8,"psub2_2":57.9,"psub2_3":47.6,"psub2_4":61.1,"psub2_5":43.9,"psub2_6":64.3,"psub3_1":57.0,"psub3_2":64.0,"psub3_3":53.3},{"State_clean":"Kogi","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":490,"mean_ss":492.6,"mean_pct":63.4,"pl1":26,"pl2":206,"pl3":250,"pl4":8,"psub1_1":66.7,"psub1_2":58.5,"psub2_1":73.2,"psub2_2":65.6,"psub2_3":56.8,"psub2_4":65.6,"psub2_5":52.1,"psub2_6":49.8,"psub3_1":62.0,"psub3_2":69.9,"psub3_3":61.7},{"State_clean":"Kogi","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":146,"mean_ss":496.3,"mean_pct":66.7,"pl1":8,"pl2":52,"pl3":83,"pl4":3,"psub1_1":68.2,"psub1_2":64.3,"psub2_1":75.1,"psub2_2":70.0,"psub2_3":54.0,"psub2_4":63.9,"psub2_5":61.6,"psub2_6":70.9,"psub3_1":66.1,"psub3_2":72.4,"psub3_3":61.4},{"State_clean":"Kogi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":170,"mean_ss":487.3,"mean_pct":58.8,"pl1":11,"pl2":81,"pl3":78,"pl4":0,"psub1_1":60.5,"psub1_2":56.3,"psub2_1":68.3,"psub2_2":60.5,"psub2_3":47.6,"psub2_4":60.8,"psub2_5":47.6,"psub2_6":60.0,"psub3_1":58.4,"psub3_2":64.3,"psub3_3":54.2},{"State_clean":"Kogi","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":607,"mean_ss":492.5,"mean_pct":63.3,"pl1":28,"pl2":277,"pl3":290,"pl4":12,"psub1_1":67.2,"psub1_2":57.5,"psub2_1":74.5,"psub2_2":65.2,"psub2_3":57.5,"psub2_4":64.9,"psub2_5":50.0,"psub2_6":50.3,"psub3_1":61.9,"psub3_2":69.3,"psub3_3":62.3},{"State_clean":"Kwara","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":126,"mean_ss":474.1,"mean_pct":45.9,"pl1":11,"pl2":97,"pl3":18,"pl4":0,"psub1_1":47.6,"psub1_2":43.4,"psub2_1":50.9,"psub2_2":45.7,"psub2_3":43.5,"psub2_4":41.8,"psub2_5":47.4,"psub2_6":40.1,"psub3_1":45.0,"psub3_2":48.7,"psub3_3":45.5},{"State_clean":"Kwara","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":156,"mean_ss":477.3,"mean_pct":49.1,"pl1":11,"pl2":122,"pl3":23,"pl4":0,"psub1_1":50.4,"psub1_2":47.2,"psub2_1":57.2,"psub2_2":48.8,"psub2_3":40.0,"psub2_4":47.3,"psub2_5":42.8,"psub2_6":55.8,"psub3_1":49.3,"psub3_2":51.9,"psub3_3":45.1},{"State_clean":"Kwara","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":562,"mean_ss":475.9,"mean_pct":47.4,"pl1":45,"pl2":407,"pl3":105,"pl4":5,"psub1_1":48.6,"psub1_2":45.5,"psub2_1":53.5,"psub2_2":47.2,"psub2_3":40.6,"psub2_4":46.9,"psub2_5":40.5,"psub2_6":51.3,"psub3_1":47.0,"psub3_2":48.1,"psub3_3":47.5},{"State_clean":"Kwara","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":110,"mean_ss":472.6,"mean_pct":44.6,"pl1":11,"pl2":81,"pl3":18,"pl4":0,"psub1_1":47.7,"psub1_2":40.1,"psub2_1":50.7,"psub2_2":48.5,"psub2_3":40.9,"psub2_4":39.8,"psub2_5":40.5,"psub2_6":40.0,"psub3_1":42.8,"psub3_2":50.9,"psub3_3":44.5},{"State_clean":"Kwara","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":144,"mean_ss":475.4,"mean_pct":47.3,"pl1":14,"pl2":106,"pl3":24,"pl4":0,"psub1_1":50.1,"psub1_2":43.1,"psub2_1":55.9,"psub2_2":48.6,"psub2_3":42.0,"psub2_4":44.1,"psub2_5":36.5,"psub2_6":53.5,"psub3_1":46.2,"psub3_2":53.4,"psub3_3":44.5},{"State_clean":"Kwara","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":587,"mean_ss":473.5,"mean_pct":45.8,"pl1":70,"pl2":396,"pl3":120,"pl4":1,"psub1_1":47.2,"psub1_2":43.8,"psub2_1":51.5,"psub2_2":46.1,"psub2_3":39.6,"psub2_4":46.6,"psub2_5":38.4,"psub2_6":46.3,"psub3_1":45.3,"psub3_2":46.8,"psub3_3":46.8},{"State_clean":"Lagos","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":80,"mean_ss":483.3,"mean_pct":53.5,"pl1":4,"pl2":55,"pl3":19,"pl4":2,"psub1_1":56.5,"psub1_2":49.0,"psub2_1":60.4,"psub2_2":53.0,"psub2_3":51.9,"psub2_4":56.2,"psub2_5":39.4,"psub2_6":46.2,"psub3_1":52.3,"psub3_2":57.8,"psub3_3":54.1},{"State_clean":"Lagos","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":146,"mean_ss":502.3,"mean_pct":70.4,"pl1":2,"pl2":52,"pl3":84,"pl4":8,"psub1_1":69.0,"psub1_2":72.5,"psub2_1":75.5,"psub2_2":71.0,"psub2_3":56.1,"psub2_4":79.6,"psub2_5":65.1,"psub2_6":66.4,"psub3_1":71.9,"psub3_2":71.2,"psub3_3":64.3},{"State_clean":"Lagos","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":728,"mean_ss":479.9,"mean_pct":51.6,"pl1":62,"pl2":466,"pl3":196,"pl4":4,"psub1_1":52.0,"psub1_2":50.9,"psub2_1":59.0,"psub2_2":52.3,"psub2_3":40.1,"psub2_4":53.9,"psub2_5":46.8,"psub2_6":50.2,"psub3_1":52.3,"psub3_2":52.0,"psub3_3":47.9},{"State_clean":"Lagos","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":69,"mean_ss":482.1,"mean_pct":53.8,"pl1":10,"pl2":36,"pl3":23,"pl4":0,"psub1_1":56.4,"psub1_2":49.9,"psub2_1":62.3,"psub2_2":51.9,"psub2_3":48.9,"psub2_4":59.7,"psub2_5":40.6,"psub2_6":39.1,"psub3_1":53.7,"psub3_2":51.6,"psub3_3":57.2},{"State_clean":"Lagos","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":121,"mean_ss":498.4,"mean_pct":67.7,"pl1":3,"pl2":43,"pl3":69,"pl4":6,"psub1_1":67.5,"psub1_2":67.8,"psub2_1":72.9,"psub2_2":69.1,"psub2_3":56.9,"psub2_4":71.3,"psub2_5":63.6,"psub2_6":65.7,"psub3_1":68.2,"psub3_2":69.7,"psub3_3":63.0},{"State_clean":"Lagos","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":614,"mean_ss":477.5,"mean_pct":49.2,"pl1":52,"pl2":426,"pl3":135,"pl4":1,"psub1_1":49.6,"psub1_2":48.6,"psub2_1":55.8,"psub2_2":49.4,"psub2_3":39.7,"psub2_4":52.0,"psub2_5":43.0,"psub2_6":49.5,"psub3_1":49.6,"psub3_2":49.2,"psub3_3":47.6},{"State_clean":"Nasarawa","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":160,"mean_ss":484.7,"mean_pct":56.6,"pl1":11,"pl2":89,"pl3":60,"pl4":0,"psub1_1":56.2,"psub1_2":57.0,"psub2_1":62.0,"psub2_2":53.2,"psub2_3":50.6,"psub2_4":57.7,"psub2_5":53.3,"psub2_6":62.5,"psub3_1":57.9,"psub3_2":53.5,"psub3_3":54.7},{"State_clean":"Nasarawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":157,"mean_ss":495.5,"mean_pct":65.2,"pl1":8,"pl2":60,"pl3":82,"pl4":7,"psub1_1":68.2,"psub1_2":60.7,"psub2_1":72.5,"psub2_2":66.7,"psub2_3":63.1,"psub2_4":62.7,"psub2_5":54.0,"psub2_6":68.2,"psub3_1":64.1,"psub3_2":68.5,"psub3_3":65.7},{"State_clean":"Nasarawa","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":607,"mean_ss":490.1,"mean_pct":60.0,"pl1":35,"pl2":305,"pl3":242,"pl4":25,"psub1_1":62.2,"psub1_2":56.7,"psub2_1":67.7,"psub2_2":61.4,"psub2_3":53.3,"psub2_4":59.6,"psub2_5":52.4,"psub2_6":56.4,"psub3_1":59.4,"psub3_2":64.2,"psub3_3":57.3},{"State_clean":"Nasarawa","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":134,"mean_ss":485.8,"mean_pct":57.1,"pl1":4,"pl2":95,"pl3":35,"pl4":0,"psub1_1":58.7,"psub1_2":54.6,"psub2_1":65.0,"psub2_2":52.5,"psub2_3":55.6,"psub2_4":54.6,"psub2_5":50.0,"psub2_6":63.8,"psub3_1":57.7,"psub3_2":55.0,"psub3_3":57.0},{"State_clean":"Nasarawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":139,"mean_ss":500.1,"mean_pct":67.7,"pl1":2,"pl2":62,"pl3":67,"pl4":8,"psub1_1":70.7,"psub1_2":63.3,"psub2_1":74.3,"psub2_2":68.3,"psub2_3":66.7,"psub2_4":65.3,"psub2_5":55.6,"psub2_6":72.7,"psub3_1":66.8,"psub3_2":72.6,"psub3_3":65.0},{"State_clean":"Nasarawa","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":570,"mean_ss":488.8,"mean_pct":59.2,"pl1":30,"pl2":298,"pl3":232,"pl4":10,"psub1_1":60.6,"psub1_2":57.1,"psub2_1":66.3,"psub2_2":60.1,"psub2_3":50.9,"psub2_4":60.5,"psub2_5":54.5,"psub2_6":52.5,"psub3_1":58.8,"psub3_2":62.0,"psub3_3":57.4},{"State_clean":"Niger","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":125,"mean_ss":495.6,"mean_pct":65.3,"pl1":6,"pl2":50,"pl3":63,"pl4":6,"psub1_1":66.7,"psub1_2":63.2,"psub2_1":72.1,"psub2_2":65.6,"psub2_3":58.2,"psub2_4":65.1,"psub2_5":59.4,"psub2_6":65.2,"psub3_1":65.4,"psub3_2":64.7,"psub3_3":64.4},{"State_clean":"Niger","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":131,"mean_ss":493.9,"mean_pct":64.6,"pl1":3,"pl2":56,"pl3":72,"pl4":0,"psub1_1":64.7,"psub1_2":64.6,"psub2_1":71.1,"psub2_2":64.5,"psub2_3":52.7,"psub2_4":68.6,"psub2_5":57.6,"psub2_6":66.4,"psub3_1":64.6,"psub3_2":67.2,"psub3_3":61.3},{"State_clean":"Niger","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":530,"mean_ss":487.0,"mean_pct":58.3,"pl1":42,"pl2":268,"pl3":215,"pl4":5,"psub1_1":59.2,"psub1_2":56.9,"psub2_1":63.6,"psub2_2":59.9,"psub2_3":50.2,"psub2_4":61.2,"psub2_5":49.2,"psub2_6":59.5,"psub3_1":57.9,"psub3_2":60.9,"psub3_3":56.7},{"State_clean":"Niger","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":170,"mean_ss":497.5,"mean_pct":67.6,"pl1":6,"pl2":56,"pl3":102,"pl4":6,"psub1_1":69.2,"psub1_2":65.2,"psub2_1":74.0,"psub2_2":73.1,"psub2_3":55.8,"psub2_4":70.3,"psub2_5":58.2,"psub2_6":64.1,"psub3_1":66.6,"psub3_2":71.6,"psub3_3":67.1},{"State_clean":"Niger","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":131,"mean_ss":492.9,"mean_pct":63.4,"pl1":4,"pl2":59,"pl3":67,"pl4":1,"psub1_1":62.4,"psub1_2":64.9,"psub2_1":69.3,"psub2_2":62.5,"psub2_3":50.0,"psub2_4":66.0,"psub2_5":58.4,"psub2_6":74.8,"psub3_1":63.9,"psub3_2":64.7,"psub3_3":59.2},{"State_clean":"Niger","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":640,"mean_ss":485.7,"mean_pct":57.2,"pl1":62,"pl2":322,"pl3":252,"pl4":4,"psub1_1":58.6,"psub1_2":55.0,"psub2_1":63.2,"psub2_2":57.4,"psub2_3":52.1,"psub2_4":58.7,"psub2_5":47.3,"psub2_6":59.0,"psub3_1":56.8,"psub3_2":59.5,"psub3_3":55.4},{"State_clean":"Ogun","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":152,"mean_ss":475.0,"mean_pct":46.8,"pl1":12,"pl2":116,"pl3":23,"pl4":1,"psub1_1":46.7,"psub1_2":47.0,"psub2_1":55.5,"psub2_2":42.8,"psub2_3":36.6,"psub2_4":50.7,"psub2_5":39.3,"psub2_6":51.6,"psub3_1":47.7,"psub3_2":45.0,"psub3_3":45.1},{"State_clean":"Ogun","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":156,"mean_ss":477.1,"mean_pct":48.9,"pl1":15,"pl2":109,"pl3":32,"pl4":0,"psub1_1":48.9,"psub1_2":48.9,"psub2_1":56.8,"psub2_2":45.3,"psub2_3":40.0,"psub2_4":49.5,"psub2_5":42.0,"psub2_6":61.2,"psub3_1":50.0,"psub3_2":48.9,"psub3_3":43.9},{"State_clean":"Ogun","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":617,"mean_ss":474.8,"mean_pct":46.7,"pl1":50,"pl2":460,"pl3":105,"pl4":2,"psub1_1":46.0,"psub1_2":47.6,"psub2_1":53.9,"psub2_2":43.4,"psub2_3":35.6,"psub2_4":49.6,"psub2_5":39.7,"psub2_6":57.8,"psub3_1":48.3,"psub3_2":44.0,"psub3_3":42.4},{"State_clean":"Ogun","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":145,"mean_ss":475.6,"mean_pct":47.3,"pl1":12,"pl2":112,"pl3":20,"pl4":1,"psub1_1":46.6,"psub1_2":48.2,"psub2_1":54.1,"psub2_2":43.1,"psub2_3":38.6,"psub2_4":51.0,"psub2_5":40.7,"psub2_6":54.8,"psub3_1":48.7,"psub3_2":44.9,"psub3_3":43.9},{"State_clean":"Ogun","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":164,"mean_ss":472.3,"mean_pct":44.3,"pl1":20,"pl2":119,"pl3":23,"pl4":2,"psub1_1":45.3,"psub1_2":42.8,"psub2_1":55.1,"psub2_2":39.7,"psub2_3":35.2,"psub2_4":42.3,"psub2_5":37.3,"psub2_6":55.5,"psub3_1":45.8,"psub3_2":39.9,"psub3_3":42.1},{"State_clean":"Ogun","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":535,"mean_ss":469.5,"mean_pct":41.9,"pl1":71,"pl2":390,"pl3":74,"pl4":0,"psub1_1":40.9,"psub1_2":43.4,"psub2_1":47.7,"psub2_2":38.9,"psub2_3":31.5,"psub2_4":46.2,"psub2_5":36.6,"psub2_6":48.5,"psub3_1":43.5,"psub3_2":38.9,"psub3_3":38.2},{"State_clean":"Ondo","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":144,"mean_ss":445.5,"mean_pct":21.5,"pl1":84,"pl2":60,"pl3":0,"pl4":0,"psub1_1":23.1,"psub1_2":19.0,"psub2_1":27.3,"psub2_2":26.7,"psub2_3":11.9,"psub2_4":18.3,"psub2_5":13.2,"psub2_6":32.6,"psub3_1":20.9,"psub3_2":16.5,"psub3_3":29.2},{"State_clean":"Ondo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":140,"mean_ss":449.4,"mean_pct":24.3,"pl1":49,"pl2":91,"pl3":0,"pl4":0,"psub1_1":25.6,"psub1_2":22.5,"psub2_1":27.7,"psub2_2":30.5,"psub2_3":15.3,"psub2_4":22.3,"psub2_5":21.2,"psub2_6":25.7,"psub3_1":23.5,"psub3_2":18.9,"psub3_3":33.9},{"State_clean":"Ondo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":540,"mean_ss":449.1,"mean_pct":24.4,"pl1":230,"pl2":310,"pl3":0,"pl4":0,"psub1_1":24.3,"psub1_2":24.5,"psub2_1":26.3,"psub2_2":27.7,"psub2_3":16.1,"psub2_4":24.3,"psub2_5":23.8,"psub2_6":26.6,"psub3_1":24.1,"psub3_2":19.8,"psub3_3":30.5},{"State_clean":"Ondo","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":134,"mean_ss":443.3,"mean_pct":20.3,"pl1":74,"pl2":60,"pl3":0,"pl4":0,"psub1_1":22.9,"psub1_2":16.4,"psub2_1":25.7,"psub2_2":26.5,"psub2_3":13.7,"psub2_4":15.4,"psub2_5":12.7,"psub2_6":26.5,"psub3_1":18.8,"psub3_2":17.9,"psub3_3":28.7},{"State_clean":"Ondo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":188,"mean_ss":448.3,"mean_pct":23.4,"pl1":71,"pl2":117,"pl3":0,"pl4":0,"psub1_1":25.2,"psub1_2":20.7,"psub2_1":28.7,"psub2_2":28.4,"psub2_3":15.3,"psub2_4":20.9,"psub2_5":19.3,"psub2_6":22.6,"psub3_1":22.4,"psub3_2":19.6,"psub3_3":31.4},{"State_clean":"Ondo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":581,"mean_ss":448.1,"mean_pct":23.8,"pl1":250,"pl2":331,"pl3":0,"pl4":0,"psub1_1":23.9,"psub1_2":23.6,"psub2_1":25.7,"psub2_2":27.8,"psub2_3":15.6,"psub2_4":22.4,"psub2_5":23.7,"psub2_6":27.2,"psub3_1":23.4,"psub3_2":19.6,"psub3_3":29.9},{"State_clean":"Osun","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":121,"mean_ss":482.9,"mean_pct":54.4,"pl1":4,"pl2":78,"pl3":39,"pl4":0,"psub1_1":55.9,"psub1_2":52.2,"psub2_1":65.6,"psub2_2":50.9,"psub2_3":45.4,"psub2_4":53.9,"psub2_5":44.4,"psub2_6":64.7,"psub3_1":55.6,"psub3_2":52.5,"psub3_3":51.4},{"State_clean":"Osun","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":149,"mean_ss":493.2,"mean_pct":63.5,"pl1":2,"pl2":78,"pl3":64,"pl4":5,"psub1_1":63.1,"psub1_2":64.1,"psub2_1":69.8,"psub2_2":60.4,"psub2_3":54.8,"psub2_4":66.8,"psub2_5":57.0,"psub2_6":70.5,"psub3_1":64.4,"psub3_2":63.0,"psub3_3":60.0},{"State_clean":"Osun","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":617,"mean_ss":480.8,"mean_pct":52.5,"pl1":34,"pl2":423,"pl3":160,"pl4":0,"psub1_1":53.2,"psub1_2":51.5,"psub2_1":59.7,"psub2_2":51.4,"psub2_3":44.3,"psub2_4":54.2,"psub2_5":47.5,"psub2_6":51.8,"psub3_1":53.2,"psub3_2":50.4,"psub3_3":52.7},{"State_clean":"Osun","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":112,"mean_ss":476.0,"mean_pct":47.9,"pl1":11,"pl2":75,"pl3":26,"pl4":0,"psub1_1":49.0,"psub1_2":46.3,"psub2_1":59.2,"psub2_2":45.6,"psub2_3":35.2,"psub2_4":47.9,"psub2_5":40.8,"psub2_6":52.2,"psub3_1":48.9,"psub3_2":45.4,"psub3_3":45.9},{"State_clean":"Osun","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":146,"mean_ss":488.8,"mean_pct":59.5,"pl1":5,"pl2":88,"pl3":52,"pl4":1,"psub1_1":60.0,"psub1_2":58.8,"psub2_1":67.8,"psub2_2":59.5,"psub2_3":47.6,"psub2_4":59.5,"psub2_5":53.9,"psub2_6":66.8,"psub3_1":60.5,"psub3_2":59.8,"psub3_3":54.8},{"State_clean":"Osun","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":599,"mean_ss":478.0,"mean_pct":49.7,"pl1":45,"pl2":406,"pl3":146,"pl4":2,"psub1_1":49.7,"psub1_2":49.6,"psub2_1":57.2,"psub2_2":47.1,"psub2_3":40.3,"psub2_4":51.9,"psub2_5":45.9,"psub2_6":50.4,"psub3_1":51.1,"psub3_2":46.5,"psub3_3":47.5},{"State_clean":"Oyo","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":857,"mean_ss":472.5,"mean_pct":44.7,"pl1":86,"pl2":655,"pl3":111,"pl4":5,"psub1_1":45.3,"psub1_2":43.8,"psub2_1":52.2,"psub2_2":42.6,"psub2_3":36.8,"psub2_4":46.0,"psub2_5":38.7,"psub2_6":47.1,"psub3_1":45.7,"psub3_2":43.4,"psub3_3":41.9},{"State_clean":"Oyo","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":807,"mean_ss":470.7,"mean_pct":43.0,"pl1":104,"pl2":595,"pl3":102,"pl4":6,"psub1_1":44.5,"psub1_2":40.8,"psub2_1":52.0,"psub2_2":41.5,"psub2_3":35.6,"psub2_4":42.3,"psub2_5":36.8,"psub2_6":44.2,"psub3_1":43.8,"psub3_2":41.8,"psub3_3":40.9},{"State_clean":"Plateau","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":145,"mean_ss":459.0,"mean_pct":32.5,"pl1":31,"pl2":108,"pl3":6,"pl4":0,"psub1_1":33.4,"psub1_2":31.0,"psub2_1":40.3,"psub2_2":29.9,"psub2_3":24.8,"psub2_4":32.5,"psub2_5":28.4,"psub2_6":31.7,"psub3_1":33.3,"psub3_2":33.8,"psub3_3":26.1},{"State_clean":"Plateau","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":149,"mean_ss":479.6,"mean_pct":51.2,"pl1":14,"pl2":95,"pl3":38,"pl4":2,"psub1_1":51.8,"psub1_2":50.3,"psub2_1":59.5,"psub2_2":50.1,"psub2_3":40.5,"psub2_4":53.7,"psub2_5":46.8,"psub2_6":47.0,"psub3_1":51.9,"psub3_2":52.6,"psub3_3":46.3},{"State_clean":"Plateau","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":599,"mean_ss":470.8,"mean_pct":43.2,"pl1":77,"pl2":428,"pl3":93,"pl4":1,"psub1_1":45.1,"psub1_2":40.3,"psub2_1":50.9,"psub2_2":43.9,"psub2_3":35.5,"psub2_4":43.3,"psub2_5":34.4,"psub2_6":43.3,"psub3_1":43.1,"psub3_2":45.1,"psub3_3":40.4},{"State_clean":"Plateau","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":152,"mean_ss":464.3,"mean_pct":37.3,"pl1":25,"pl2":116,"pl3":11,"pl4":0,"psub1_1":39.4,"psub1_2":34.1,"psub2_1":46.7,"psub2_2":35.5,"psub2_3":31.0,"psub2_4":34.1,"psub2_5":32.4,"psub2_6":37.5,"psub3_1":37.4,"psub3_2":40.2,"psub3_3":32.4},{"State_clean":"Plateau","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":145,"mean_ss":479.1,"mean_pct":50.9,"pl1":13,"pl2":92,"pl3":39,"pl4":1,"psub1_1":50.9,"psub1_2":50.9,"psub2_1":58.5,"psub2_2":49.4,"psub2_3":39.4,"psub2_4":53.9,"psub2_5":47.9,"psub2_6":47.9,"psub3_1":51.9,"psub3_2":53.7,"psub3_3":42.7},{"State_clean":"Plateau","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":579,"mean_ss":471.4,"mean_pct":43.7,"pl1":67,"pl2":426,"pl3":86,"pl4":0,"psub1_1":46.0,"psub1_2":40.3,"psub2_1":51.3,"psub2_2":45.6,"psub2_3":37.5,"psub2_4":41.2,"psub2_5":37.3,"psub2_6":43.3,"psub3_1":43.1,"psub3_2":46.3,"psub3_3":42.8},{"State_clean":"Rivers","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":163,"mean_ss":473.8,"mean_pct":45.8,"pl1":30,"pl2":80,"pl3":51,"pl4":2,"psub1_1":46.0,"psub1_2":45.7,"psub2_1":48.4,"psub2_2":42.5,"psub2_3":45.3,"psub2_4":44.3,"psub2_5":51.8,"psub2_6":37.4,"psub3_1":45.2,"psub3_2":49.7,"psub3_3":44.0},{"State_clean":"Rivers","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":81,"mean_ss":473.4,"mean_pct":45.6,"pl1":19,"pl2":39,"pl3":21,"pl4":2,"psub1_1":47.3,"psub1_2":42.9,"psub2_1":51.6,"psub2_2":44.9,"psub2_3":42.1,"psub2_4":45.5,"psub2_5":43.8,"psub2_6":33.3,"psub3_1":44.2,"psub3_2":52.8,"psub3_3":42.8},{"State_clean":"Rivers","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":599,"mean_ss":468.1,"mean_pct":40.6,"pl1":145,"pl2":326,"pl3":121,"pl4":7,"psub1_1":41.8,"psub1_2":38.8,"psub2_1":44.3,"psub2_2":39.6,"psub2_3":38.3,"psub2_4":41.8,"psub2_5":41.8,"psub2_6":23.9,"psub3_1":39.4,"psub3_2":45.8,"psub3_3":39.0},{"State_clean":"Rivers","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":166,"mean_ss":472.6,"mean_pct":43.8,"pl1":34,"pl2":86,"pl3":41,"pl4":5,"psub1_1":45.1,"psub1_2":41.9,"psub2_1":47.8,"psub2_2":40.4,"psub2_3":45.8,"psub2_4":43.8,"psub2_5":44.4,"psub2_6":31.0,"psub3_1":43.0,"psub3_2":47.4,"psub3_3":42.7},{"State_clean":"Rivers","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":69,"mean_ss":473.6,"mean_pct":45.1,"pl1":14,"pl2":36,"pl3":17,"pl4":2,"psub1_1":45.7,"psub1_2":44.2,"psub2_1":51.9,"psub2_2":39.6,"psub2_3":42.4,"psub2_4":47.8,"psub2_5":43.8,"psub2_6":34.1,"psub3_1":45.7,"psub3_2":49.3,"psub3_3":36.3},{"State_clean":"Rivers","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":563,"mean_ss":466.5,"mean_pct":39.2,"pl1":140,"pl2":321,"pl3":93,"pl4":9,"psub1_1":40.5,"psub1_2":37.4,"psub2_1":42.4,"psub2_2":38.5,"psub2_3":38.3,"psub2_4":40.4,"psub2_5":37.4,"psub2_6":28.2,"psub3_1":38.1,"psub3_2":43.4,"psub3_3":38.5},{"State_clean":"Sokoto","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":99,"mean_ss":491.8,"mean_pct":62.3,"pl1":5,"pl2":47,"pl3":43,"pl4":4,"psub1_1":61.8,"psub1_2":63.0,"psub2_1":69.5,"psub2_2":65.5,"psub2_3":42.3,"psub2_4":61.6,"psub2_5":56.3,"psub2_6":80.8,"psub3_1":62.9,"psub3_2":62.1,"psub3_3":59.2},{"State_clean":"Sokoto","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":139,"mean_ss":506.1,"mean_pct":72.7,"pl1":2,"pl2":40,"pl3":86,"pl4":11,"psub1_1":72.8,"psub1_2":72.4,"psub2_1":79.9,"psub2_2":76.7,"psub2_3":56.3,"psub2_4":71.0,"psub2_5":72.3,"psub2_6":77.0,"psub3_1":72.1,"psub3_2":80.0,"psub3_3":66.3},{"State_clean":"Sokoto","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":603,"mean_ss":485.6,"mean_pct":56.1,"pl1":42,"pl2":339,"pl3":202,"pl4":20,"psub1_1":56.7,"psub1_2":55.1,"psub2_1":63.6,"psub2_2":56.3,"psub2_3":45.5,"psub2_4":56.3,"psub2_5":49.2,"psub2_6":63.4,"psub3_1":56.3,"psub3_2":59.4,"psub3_3":51.0},{"State_clean":"Sokoto","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":160,"mean_ss":485.9,"mean_pct":57.0,"pl1":12,"pl2":83,"pl3":62,"pl4":3,"psub1_1":58.4,"psub1_2":54.9,"psub2_1":66.3,"psub2_2":59.0,"psub2_3":45.7,"psub2_4":54.7,"psub2_5":48.8,"psub2_6":68.1,"psub3_1":57.9,"psub3_2":55.8,"psub3_3":54.6},{"State_clean":"Sokoto","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":152,"mean_ss":505.5,"mean_pct":69.3,"pl1":4,"pl2":62,"pl3":59,"pl4":27,"psub1_1":70.8,"psub1_2":66.9,"psub2_1":75.7,"psub2_2":74.5,"psub2_3":58.8,"psub2_4":66.8,"psub2_5":64.3,"psub2_6":72.7,"psub3_1":67.9,"psub3_2":75.9,"psub3_3":67.9},{"State_clean":"Sokoto","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":580,"mean_ss":486.3,"mean_pct":56.7,"pl1":30,"pl2":338,"pl3":196,"pl4":16,"psub1_1":58.5,"psub1_2":54.0,"psub2_1":66.2,"psub2_2":56.7,"psub2_3":47.5,"psub2_4":54.3,"psub2_5":50.6,"psub2_6":59.6,"psub3_1":56.8,"psub3_2":57.8,"psub3_3":54.6},{"State_clean":"Taraba","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":119,"mean_ss":479.2,"mean_pct":50.5,"pl1":8,"pl2":83,"pl3":26,"pl4":2,"psub1_1":54.2,"psub1_2":44.9,"psub2_1":63.9,"psub2_2":48.2,"psub2_3":47.9,"psub2_4":49.0,"psub2_5":31.3,"psub2_6":59.7,"psub3_1":51.2,"psub3_2":55.9,"psub3_3":41.3},{"State_clean":"Taraba","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":167,"mean_ss":484.2,"mean_pct":55.7,"pl1":6,"pl2":107,"pl3":52,"pl4":2,"psub1_1":58.2,"psub1_2":51.9,"psub2_1":70.0,"psub2_2":48.7,"psub2_3":50.2,"psub2_4":55.6,"psub2_5":39.7,"psub2_6":65.6,"psub3_1":57.6,"psub3_2":57.2,"psub3_3":44.2},{"State_clean":"Taraba","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":613,"mean_ss":483.0,"mean_pct":54.0,"pl1":25,"pl2":425,"pl3":158,"pl4":5,"psub1_1":57.5,"psub1_2":48.7,"psub2_1":67.6,"psub2_2":50.4,"psub2_3":48.8,"psub2_4":51.0,"psub2_5":37.5,"psub2_6":63.9,"psub3_1":54.1,"psub3_2":58.7,"psub3_3":47.4},{"State_clean":"Taraba","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":136,"mean_ss":479.4,"mean_pct":50.1,"pl1":14,"pl2":95,"pl3":24,"pl4":3,"psub1_1":57.5,"psub1_2":38.9,"psub2_1":66.3,"psub2_2":51.3,"psub2_3":51.6,"psub2_4":42.4,"psub2_5":26.7,"psub2_6":52.9,"psub3_1":49.0,"psub3_2":56.2,"psub3_3":46.5},{"State_clean":"Taraba","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":157,"mean_ss":480.0,"mean_pct":52.3,"pl1":11,"pl2":105,"pl3":41,"pl4":0,"psub1_1":55.0,"psub1_2":48.2,"psub2_1":65.7,"psub2_2":45.4,"psub2_3":48.1,"psub2_4":51.5,"psub2_5":37.7,"psub2_6":59.6,"psub3_1":53.7,"psub3_2":53.1,"psub3_3":44.2},{"State_clean":"Taraba","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":555,"mean_ss":482.0,"mean_pct":53.2,"pl1":26,"pl2":380,"pl3":147,"pl4":2,"psub1_1":57.3,"psub1_2":47.2,"psub2_1":66.5,"psub2_2":50.9,"psub2_3":48.8,"psub2_4":49.5,"psub2_5":35.0,"psub2_6":65.0,"psub3_1":53.0,"psub3_2":58.9,"psub3_3":46.9},{"State_clean":"Yobe","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":158,"mean_ss":471.0,"mean_pct":43.1,"pl1":16,"pl2":120,"pl3":22,"pl4":0,"psub1_1":43.7,"psub1_2":42.1,"psub2_1":50.9,"psub2_2":42.1,"psub2_3":33.9,"psub2_4":40.6,"psub2_5":40.8,"psub2_6":49.4,"psub3_1":44.1,"psub3_2":43.8,"psub3_3":37.6},{"State_clean":"Yobe","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":148,"mean_ss":487.5,"mean_pct":58.9,"pl1":9,"pl2":82,"pl3":56,"pl4":1,"psub1_1":59.6,"psub1_2":57.7,"psub2_1":67.6,"psub2_2":57.1,"psub2_3":48.0,"psub2_4":61.1,"psub2_5":51.5,"psub2_6":59.5,"psub3_1":59.3,"psub3_2":62.3,"psub3_3":52.2},{"State_clean":"Yobe","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":533,"mean_ss":475.9,"mean_pct":47.0,"pl1":65,"pl2":368,"pl3":88,"pl4":12,"psub1_1":47.8,"psub1_2":45.9,"psub2_1":54.9,"psub2_2":46.9,"psub2_3":36.5,"psub2_4":45.5,"psub2_5":43.6,"psub2_6":51.6,"psub3_1":47.3,"psub3_2":48.3,"psub3_3":43.9},{"State_clean":"Yobe","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":133,"mean_ss":470.7,"mean_pct":42.6,"pl1":9,"pl2":108,"pl3":16,"pl4":0,"psub1_1":41.7,"psub1_2":43.8,"psub2_1":46.1,"psub2_2":40.8,"psub2_3":34.8,"psub2_4":43.9,"psub2_5":38.9,"psub2_6":53.4,"psub3_1":43.4,"psub3_2":40.6,"psub3_3":41.4},{"State_clean":"Yobe","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":169,"mean_ss":485.6,"mean_pct":57.3,"pl1":15,"pl2":90,"pl3":62,"pl4":2,"psub1_1":57.6,"psub1_2":56.8,"psub2_1":66.5,"psub2_2":53.3,"psub2_3":48.3,"psub2_4":60.6,"psub2_5":50.7,"psub2_6":57.7,"psub3_1":59.1,"psub3_2":58.0,"psub3_3":48.0},{"State_clean":"Yobe","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":555,"mean_ss":476.0,"mean_pct":48.0,"pl1":68,"pl2":376,"pl3":99,"pl4":12,"psub1_1":48.7,"psub1_2":47.0,"psub2_1":56.0,"psub2_2":47.7,"psub2_3":37.5,"psub2_4":45.9,"psub2_5":45.6,"psub2_6":53.2,"psub3_1":48.3,"psub3_2":48.2,"psub3_3":46.1},{"State_clean":"Zamfara","Gender_L":"Female","Loc_L":"Rural","Own_L":"Public","n":151,"mean_ss":475.0,"mean_pct":48.0,"pl1":20,"pl2":99,"pl3":32,"pl4":0,"psub1_1":51.0,"psub1_2":43.4,"psub2_1":59.5,"psub2_2":49.2,"psub2_3":39.1,"psub2_4":43.8,"psub2_5":35.4,"psub2_6":57.9,"psub3_1":47.4,"psub3_2":47.1,"psub3_3":51.7},{"State_clean":"Zamfara","Gender_L":"Female","Loc_L":"Urban","Own_L":"Private","n":146,"mean_ss":484.6,"mean_pct":53.9,"pl1":13,"pl2":91,"pl3":36,"pl4":6,"psub1_1":53.9,"psub1_2":53.8,"psub2_1":63.7,"psub2_2":51.3,"psub2_3":40.3,"psub2_4":54.9,"psub2_5":46.6,"psub2_6":65.1,"psub3_1":56.5,"psub3_2":47.8,"psub3_3":49.4},{"State_clean":"Zamfara","Gender_L":"Female","Loc_L":"Urban","Own_L":"Public","n":530,"mean_ss":484.0,"mean_pct":55.7,"pl1":33,"pl2":337,"pl3":157,"pl4":3,"psub1_1":57.8,"psub1_2":52.5,"psub2_1":63.6,"psub2_2":58.3,"psub2_3":46.8,"psub2_4":52.3,"psub2_5":46.0,"psub2_6":66.2,"psub3_1":54.8,"psub3_2":59.3,"psub3_3":55.2},{"State_clean":"Zamfara","Gender_L":"Male","Loc_L":"Rural","Own_L":"Public","n":146,"mean_ss":474.5,"mean_pct":46.9,"pl1":14,"pl2":109,"pl3":23,"pl4":0,"psub1_1":49.7,"psub1_2":42.9,"psub2_1":57.8,"psub2_2":48.2,"psub2_3":37.6,"psub2_4":45.3,"psub2_5":34.2,"psub2_6":52.7,"psub3_1":46.2,"psub3_2":46.3,"psub3_3":50.7},{"State_clean":"Zamfara","Gender_L":"Male","Loc_L":"Urban","Own_L":"Private","n":144,"mean_ss":481.3,"mean_pct":49.3,"pl1":15,"pl2":101,"pl3":15,"pl4":13,"psub1_1":49.8,"psub1_2":48.5,"psub2_1":58.7,"psub2_2":46.8,"psub2_3":39.5,"psub2_4":49.5,"psub2_5":43.1,"psub2_6":56.2,"psub3_1":50.8,"psub3_2":47.1,"psub3_3":45.6},{"State_clean":"Zamfara","Gender_L":"Male","Loc_L":"Urban","Own_L":"Public","n":597,"mean_ss":486.7,"mean_pct":57.8,"pl1":21,"pl2":371,"pl3":201,"pl4":4,"psub1_1":60.3,"psub1_2":54.0,"psub2_1":67.6,"psub2_2":59.7,"psub2_3":48.9,"psub2_4":52.6,"psub2_5":48.9,"psub2_6":68.4,"psub3_1":57.4,"psub3_2":60.2,"psub3_3":56.7}];
+const MAP = {"viewBox":"0 0 620.0 501.0","states":{"Abia":{"d":"M 244.23,403.51 L 250.81,403.63 L 252.73,405.89 L 253.14,413.15 L 264.52,413.85 L 266.27,417.96 L 269.94,420.02 L 270.46,427.14 L 273.66,436.90 L 270.90,436.29 L 264.45,431.76 L 263.02,428.87 L 258.32,428.24 L 257.03,435.95 L 253.02,438.75 L 251.97,446.43 L 252.48,450.39 L 249.50,454.30 L 249.32,459.44 L 250.87,463.66 L 246.59,461.07 L 242.49,460.43 L 236.81,461.52 L 233.71,459.26 L 234.95,455.37 L 239.64,448.48 L 238.63,444.80 L 241.13,436.50 L 246.31,427.19 L 245.71,413.29 L 244.49,411.03 L 238.56,408.23 L 244.23,403.51 Z","cx":250.0,"cy":433.9},"Adamawa":{"d":"M 471.82,332.33 L 468.40,322.40 L 468.87,317.97 L 460.79,308.63 L 457.08,307.69 L 452.60,312.51 L 448.07,306.76 L 446.02,301.34 L 450.03,296.22 L 457.20,289.22 L 464.18,279.96 L 469.12,275.76 L 469.16,269.45 L 474.81,257.35 L 472.97,252.82 L 467.48,249.27 L 467.57,244.45 L 463.33,236.57 L 457.89,234.67 L 452.31,224.97 L 460.04,223.09 L 472.27,215.35 L 473.30,202.33 L 478.41,203.11 L 484.28,201.90 L 495.08,189.44 L 502.19,188.35 L 506.95,186.57 L 509.59,182.35 L 514.16,181.33 L 519.68,175.47 L 526.56,176.10 L 537.14,182.39 L 541.61,181.40 L 542.80,175.21 L 546.68,164.49 L 546.91,158.09 L 552.93,159.25 L 560.59,157.63 L 560.39,160.23 L 556.59,165.87 L 552.47,175.01 L 551.48,189.20 L 546.52,198.15 L 541.78,199.08 L 538.41,203.79 L 539.78,205.87 L 537.38,209.69 L 540.91,214.72 L 539.16,217.20 L 538.40,224.36 L 536.97,227.44 L 528.35,229.05 L 518.75,235.32 L 521.13,236.95 L 521.20,242.95 L 519.92,252.99 L 515.52,258.70 L 516.45,265.09 L 511.67,268.02 L 511.55,270.21 L 504.78,274.76 L 500.03,273.44 L 496.26,280.61 L 487.86,283.11 L 487.32,286.36 L 488.95,295.20 L 486.32,300.12 L 486.99,305.14 L 480.84,312.74 L 476.90,322.00 L 477.98,328.40 L 471.82,332.33 Z","cx":494.1,"cy":246.9},"Akwa Ibom":{"d":"M 250.87,463.66 L 249.32,459.44 L 249.50,454.30 L 252.48,450.39 L 251.97,446.43 L 253.02,438.75 L 257.03,435.95 L 258.32,428.24 L 263.02,428.87 L 264.45,431.76 L 270.90,436.29 L 271.13,441.62 L 274.98,441.17 L 278.98,443.33 L 278.80,449.97 L 282.87,458.11 L 291.94,466.98 L 292.42,472.36 L 289.94,477.80 L 281.08,477.23 L 272.43,477.67 L 262.69,479.03 L 256.51,480.88 L 252.71,477.23 L 252.95,468.36 L 250.87,463.66 Z","cx":265.7,"cy":456.2},"Anambra":{"d":"M 221.35,365.74 L 224.87,368.88 L 231.51,371.46 L 230.79,374.88 L 227.32,378.67 L 226.67,382.02 L 230.10,383.39 L 235.00,392.50 L 238.55,401.91 L 244.23,403.51 L 238.56,408.23 L 234.26,409.37 L 229.91,408.36 L 223.38,410.14 L 220.72,416.74 L 214.91,415.40 L 209.50,419.82 L 206.66,418.61 L 209.03,414.51 L 212.74,404.91 L 214.08,397.10 L 209.33,378.40 L 209.28,378.17 L 213.52,378.08 L 216.16,375.34 L 217.21,369.81 L 221.35,365.74 Z","cx":224.7,"cy":394.8},"Bauchi":{"d":"M 406.50,79.46 L 412.74,84.37 L 414.14,93.76 L 416.69,97.46 L 418.05,110.19 L 424.79,126.84 L 422.97,138.33 L 426.73,139.84 L 423.90,143.03 L 419.02,145.64 L 414.12,150.60 L 408.69,154.00 L 405.80,163.88 L 402.72,169.03 L 408.68,171.42 L 411.01,179.41 L 416.83,181.51 L 418.51,185.45 L 417.77,196.06 L 413.01,197.29 L 412.22,200.12 L 415.69,203.63 L 425.09,210.42 L 426.58,218.42 L 429.46,225.25 L 421.03,224.35 L 412.48,228.23 L 407.76,227.61 L 404.05,229.73 L 393.93,223.75 L 384.98,219.95 L 369.29,212.42 L 366.61,215.00 L 368.98,220.98 L 365.13,222.03 L 362.80,226.20 L 359.26,227.34 L 351.15,227.80 L 342.86,226.41 L 334.10,216.97 L 336.02,213.39 L 336.00,207.70 L 332.91,203.49 L 324.05,205.25 L 324.08,195.33 L 321.34,188.17 L 315.29,187.79 L 310.77,183.64 L 313.10,177.12 L 317.07,170.33 L 313.26,163.94 L 312.58,156.85 L 314.23,150.42 L 318.88,149.79 L 323.24,143.95 L 329.61,138.50 L 332.82,139.19 L 337.27,137.46 L 348.92,140.11 L 353.48,139.53 L 354.93,142.45 L 367.48,141.75 L 370.07,147.36 L 369.40,153.63 L 371.14,156.35 L 375.75,157.30 L 380.26,156.19 L 385.02,157.91 L 385.65,153.27 L 394.85,148.15 L 394.90,144.81 L 377.96,142.74 L 375.54,141.27 L 371.27,135.36 L 370.04,131.32 L 365.54,129.80 L 367.57,125.81 L 365.97,118.85 L 357.38,119.02 L 360.37,112.02 L 365.35,111.66 L 369.77,109.24 L 384.59,103.53 L 384.10,100.24 L 389.52,83.89 L 396.00,81.91 L 397.57,84.96 L 406.50,79.46 Z","cx":341.7,"cy":155.1},"Benue":{"d":"M 259.30,303.55 L 273.54,306.55 L 284.55,311.67 L 289.65,312.36 L 296.64,316.41 L 297.63,314.43 L 293.83,305.06 L 295.60,299.59 L 298.79,297.82 L 304.16,297.81 L 312.30,300.80 L 321.78,302.38 L 324.99,301.64 L 334.51,308.83 L 332.99,314.10 L 337.93,311.98 L 343.96,311.21 L 356.61,313.02 L 364.34,321.52 L 371.10,327.62 L 372.17,331.52 L 369.78,338.87 L 370.02,343.63 L 363.99,348.98 L 361.32,353.95 L 359.62,363.23 L 359.82,371.77 L 358.29,378.37 L 353.16,382.19 L 349.47,382.02 L 345.01,375.41 L 340.55,370.79 L 336.84,370.03 L 329.12,371.84 L 324.60,370.76 L 324.68,365.59 L 317.71,361.24 L 313.32,359.88 L 306.82,361.81 L 307.44,365.44 L 302.38,367.66 L 296.06,367.37 L 290.64,370.77 L 288.59,365.49 L 283.60,366.60 L 280.61,369.68 L 275.45,369.80 L 274.44,376.45 L 271.07,377.98 L 267.43,373.03 L 269.28,367.85 L 268.55,363.31 L 263.90,360.37 L 260.43,362.67 L 252.84,356.50 L 250.73,350.82 L 257.64,354.31 L 258.69,349.58 L 266.56,344.56 L 268.93,332.84 L 265.23,332.24 L 264.23,327.79 L 263.76,316.74 L 259.48,310.55 L 259.30,303.55 Z","cx":318.6,"cy":341.3},"Borno":{"d":"M 560.59,157.63 L 552.93,159.25 L 546.91,158.09 L 546.68,164.49 L 542.80,175.21 L 541.61,181.40 L 537.14,182.39 L 526.56,176.10 L 519.68,175.47 L 514.16,181.33 L 509.59,182.35 L 506.95,186.57 L 502.19,188.35 L 495.08,189.44 L 484.28,201.90 L 478.41,203.11 L 473.30,202.33 L 468.67,199.29 L 466.15,194.36 L 461.57,192.49 L 457.48,185.96 L 461.66,179.91 L 461.07,174.87 L 466.28,170.70 L 466.06,164.00 L 470.08,157.99 L 479.14,155.58 L 485.76,150.21 L 485.31,142.19 L 491.04,132.54 L 494.70,129.01 L 494.82,124.68 L 492.29,121.70 L 487.69,120.03 L 491.51,112.76 L 490.14,106.84 L 492.29,91.12 L 491.39,81.73 L 497.09,76.72 L 500.49,70.94 L 500.10,67.98 L 495.06,63.49 L 494.06,60.44 L 495.33,50.75 L 500.04,51.36 L 500.75,48.15 L 503.96,46.71 L 504.96,41.18 L 510.65,38.94 L 516.99,34.94 L 519.13,31.32 L 528.39,27.53 L 533.17,28.86 L 543.95,18.96 L 543.84,25.79 L 546.66,30.74 L 545.34,33.97 L 549.58,37.58 L 553.18,43.53 L 559.02,47.85 L 561.53,52.25 L 566.46,51.47 L 566.46,71.46 L 571.49,74.92 L 575.26,81.07 L 580.25,82.15 L 587.24,86.63 L 597.76,86.53 L 601.96,88.37 L 603.50,92.96 L 610.00,96.79 L 607.15,103.69 L 608.93,106.70 L 606.26,111.36 L 606.51,115.57 L 603.67,118.26 L 608.00,122.70 L 607.86,128.14 L 598.57,131.65 L 597.20,134.11 L 590.66,136.64 L 586.46,140.40 L 580.98,141.98 L 575.88,139.07 L 572.38,143.54 L 565.94,153.92 L 560.59,157.63 Z","cx":549.1,"cy":109.1},"Bayelsa":{"d":"M 196.93,489.10 L 187.84,489.26 L 191.58,483.42 L 193.36,485.91 L 194.67,486.26 L 196.93,489.10 Z M 148.69,447.51 L 158.17,453.32 L 160.80,453.29 L 166.85,449.97 L 179.32,448.51 L 189.95,442.87 L 191.57,439.55 L 196.61,439.51 L 201.68,437.05 L 201.06,435.05 L 206.43,436.02 L 206.96,438.83 L 202.80,445.43 L 200.57,445.28 L 196.94,451.64 L 197.57,456.76 L 195.36,464.10 L 199.22,468.91 L 204.50,466.85 L 208.20,471.93 L 211.93,473.96 L 209.51,483.67 L 211.21,487.51 L 198.77,488.81 L 196.13,487.76 L 194.84,485.97 L 193.76,485.76 L 193.52,481.51 L 187.43,486.01 L 187.11,490.42 L 180.37,490.99 L 175.21,489.09 L 160.35,477.81 L 153.35,468.29 L 149.11,460.16 L 144.89,448.35 L 148.69,447.51 Z","cx":173.0,"cy":462.1},"Cross River":{"d":"M 290.64,370.77 L 296.06,367.37 L 302.38,367.66 L 307.44,365.44 L 306.82,361.81 L 313.32,359.88 L 317.71,361.24 L 324.68,365.59 L 324.60,370.76 L 329.12,371.84 L 336.84,370.03 L 340.55,370.79 L 345.01,375.41 L 349.47,382.02 L 347.73,388.75 L 342.92,390.06 L 339.32,395.34 L 336.71,396.09 L 333.66,400.03 L 318.09,413.33 L 319.51,414.87 L 317.02,419.77 L 321.39,425.76 L 318.03,432.08 L 316.74,439.99 L 316.86,445.29 L 312.13,450.84 L 310.19,455.46 L 302.17,465.96 L 302.63,469.01 L 291.94,466.98 L 282.87,458.11 L 278.80,449.97 L 278.98,443.33 L 274.98,441.17 L 271.13,441.62 L 270.90,436.29 L 273.66,436.90 L 270.46,427.14 L 269.94,420.02 L 271.85,413.42 L 274.90,409.46 L 274.19,405.25 L 278.14,404.24 L 280.31,407.87 L 286.66,402.89 L 295.97,391.25 L 294.48,388.02 L 298.25,383.73 L 294.83,376.72 L 290.64,370.77 Z","cx":295.2,"cy":414.1},"Delta":{"d":"M 209.33,378.40 L 214.08,397.10 L 212.74,404.91 L 209.03,414.51 L 206.66,418.61 L 207.35,421.76 L 203.75,428.10 L 203.60,432.39 L 201.06,435.05 L 201.68,437.05 L 196.61,439.51 L 191.57,439.55 L 189.95,442.87 L 179.32,448.51 L 166.85,449.97 L 160.80,453.29 L 158.17,453.32 L 148.69,447.51 L 145.36,447.58 L 142.34,438.23 L 143.57,434.89 L 138.70,432.77 L 134.01,427.45 L 132.30,422.24 L 126.25,411.73 L 131.83,398.19 L 137.56,401.80 L 137.68,409.39 L 142.32,406.72 L 142.07,403.76 L 149.46,403.54 L 152.72,405.47 L 158.35,402.04 L 166.00,406.26 L 171.15,411.12 L 169.51,414.37 L 171.96,417.59 L 177.65,416.27 L 186.79,407.65 L 187.12,403.62 L 182.22,399.83 L 178.64,391.78 L 179.48,388.23 L 183.08,387.54 L 185.69,390.69 L 188.95,387.03 L 194.88,384.52 L 201.50,380.39 L 207.82,380.05 L 209.33,378.40 Z","cx":149.3,"cy":415.4},"Ebonyi":{"d":"M 267.43,373.03 L 271.07,377.98 L 274.44,376.45 L 275.45,369.80 L 280.61,369.68 L 283.60,366.60 L 288.59,365.49 L 290.64,370.77 L 294.83,376.72 L 298.25,383.73 L 294.48,388.02 L 295.97,391.25 L 286.66,402.89 L 280.31,407.87 L 278.14,404.24 L 274.19,405.25 L 274.90,409.46 L 271.85,413.42 L 269.94,420.02 L 266.27,417.96 L 264.52,413.85 L 253.14,413.15 L 252.73,405.89 L 255.66,405.08 L 259.59,408.56 L 259.94,402.95 L 262.74,399.35 L 260.59,390.06 L 262.80,385.12 L 262.81,380.42 L 260.78,372.88 L 267.43,373.03 Z","cx":277.3,"cy":395.3},"Edo":{"d":"M 177.48,325.88 L 182.13,327.98 L 181.62,332.51 L 184.21,333.57 L 189.00,331.21 L 193.83,335.73 L 198.32,335.29 L 201.25,341.96 L 207.31,340.46 L 210.97,345.80 L 209.59,356.63 L 206.31,363.39 L 206.59,369.58 L 209.28,378.17 L 209.33,378.40 L 207.82,380.05 L 201.50,380.39 L 194.88,384.52 L 188.95,387.03 L 185.69,390.69 L 183.08,387.54 L 179.48,388.23 L 178.64,391.78 L 182.22,399.83 L 187.12,403.62 L 186.79,407.65 L 177.65,416.27 L 171.96,417.59 L 169.51,414.37 L 171.15,411.12 L 166.00,406.26 L 158.35,402.04 L 152.72,405.47 L 149.46,403.54 L 142.07,403.76 L 142.32,406.72 L 137.68,409.39 L 137.56,401.80 L 131.83,398.19 L 125.00,390.26 L 126.39,386.64 L 129.24,385.44 L 132.29,378.07 L 129.71,374.55 L 130.28,369.66 L 133.85,366.10 L 135.70,361.51 L 151.74,361.06 L 153.21,368.97 L 156.86,366.39 L 159.55,367.97 L 162.94,364.41 L 165.01,353.45 L 167.28,350.15 L 170.14,342.64 L 174.45,337.47 L 172.56,332.24 L 173.53,329.07 L 177.48,325.88 Z","cx":168.7,"cy":372.1},"Ekiti":{"d":"M 129.27,303.03 L 134.55,303.62 L 137.27,305.97 L 143.63,306.26 L 144.89,302.22 L 152.86,301.08 L 151.96,304.86 L 159.24,303.78 L 156.53,308.39 L 157.54,312.66 L 166.63,316.75 L 161.35,319.88 L 156.73,324.78 L 155.35,331.31 L 151.52,338.03 L 145.21,340.38 L 143.63,334.95 L 141.23,332.74 L 129.32,332.64 L 125.64,333.81 L 121.99,324.45 L 121.84,314.00 L 123.37,310.57 L 128.05,307.29 L 129.27,303.03 Z","cx":140.6,"cy":322.2},"Enugu":{"d":"M 221.35,365.74 L 223.55,361.69 L 227.66,365.41 L 231.68,361.06 L 236.51,357.95 L 241.50,351.95 L 247.87,348.91 L 250.73,350.82 L 252.84,356.50 L 260.43,362.67 L 263.90,360.37 L 268.55,363.31 L 269.28,367.85 L 267.43,373.03 L 260.78,372.88 L 262.81,380.42 L 262.80,385.12 L 260.59,390.06 L 262.74,399.35 L 259.94,402.95 L 259.59,408.56 L 255.66,405.08 L 252.73,405.89 L 250.81,403.63 L 244.23,403.51 L 238.55,401.91 L 235.00,392.50 L 230.10,383.39 L 226.67,382.02 L 227.32,378.67 L 230.79,374.88 L 231.51,371.46 L 224.87,368.88 L 221.35,365.74 Z","cx":244.9,"cy":379.5},"FCT":{"d":"M 241.60,239.69 L 251.26,239.45 L 254.44,236.92 L 257.34,239.03 L 253.98,247.26 L 253.89,259.15 L 251.06,269.77 L 245.65,277.82 L 240.04,280.74 L 233.95,282.57 L 224.96,283.97 L 217.80,284.22 L 215.18,284.01 L 213.98,278.96 L 213.37,254.69 L 213.66,243.73 L 225.00,242.78 L 234.60,249.59 L 241.60,239.69 Z","cx":233.0,"cy":264.5},"Gombe":{"d":"M 426.73,139.84 L 430.84,137.94 L 438.27,139.90 L 445.12,144.90 L 448.96,150.00 L 455.16,155.97 L 455.70,159.85 L 454.73,169.32 L 455.60,174.87 L 461.07,174.87 L 461.66,179.91 L 457.48,185.96 L 461.57,192.49 L 466.15,194.36 L 468.67,199.29 L 473.30,202.33 L 472.27,215.35 L 460.04,223.09 L 452.31,224.97 L 429.46,225.25 L 426.58,218.42 L 425.09,210.42 L 415.69,203.63 L 412.22,200.12 L 413.01,197.29 L 417.77,196.06 L 418.51,185.45 L 416.83,181.51 L 411.01,179.41 L 408.68,171.42 L 402.72,169.03 L 405.80,163.88 L 408.69,154.00 L 414.12,150.60 L 419.02,145.64 L 423.90,143.03 L 426.73,139.84 Z","cx":438.4,"cy":183.5},"Imo":{"d":"M 238.56,408.23 L 244.49,411.03 L 245.71,413.29 L 246.31,427.19 L 241.13,436.50 L 238.63,444.80 L 227.84,445.54 L 218.61,444.75 L 215.14,443.09 L 212.06,438.17 L 213.36,432.20 L 207.27,430.41 L 209.50,419.82 L 214.91,415.40 L 220.72,416.74 L 223.38,410.14 L 229.91,408.36 L 234.26,409.37 L 238.56,408.23 Z","cx":227.4,"cy":423.5},"Jigawa":{"d":"M 359.78,63.43 L 366.08,64.95 L 370.31,60.36 L 384.55,55.16 L 386.33,56.15 L 389.79,65.39 L 395.43,63.35 L 402.59,65.33 L 404.37,68.02 L 406.50,79.46 L 397.57,84.96 L 396.00,81.91 L 389.52,83.89 L 384.10,100.24 L 384.59,103.53 L 369.77,109.24 L 365.35,111.66 L 360.37,112.02 L 357.38,119.02 L 365.97,118.85 L 367.57,125.81 L 365.54,129.80 L 370.04,131.32 L 371.27,135.36 L 375.54,141.27 L 377.96,142.74 L 394.90,144.81 L 394.85,148.15 L 385.65,153.27 L 385.02,157.91 L 380.26,156.19 L 375.75,157.30 L 371.14,156.35 L 369.40,153.63 L 370.07,147.36 L 367.48,141.75 L 354.93,142.45 L 353.48,139.53 L 348.92,140.11 L 337.27,137.46 L 338.09,132.71 L 343.83,127.23 L 339.14,123.79 L 336.66,119.22 L 332.81,116.12 L 335.53,112.38 L 336.38,107.34 L 334.54,101.63 L 330.48,104.57 L 327.43,101.32 L 323.36,101.66 L 322.82,91.81 L 316.19,90.28 L 314.28,84.81 L 310.28,82.02 L 309.92,77.33 L 303.64,75.73 L 295.97,78.61 L 293.97,83.53 L 290.18,76.11 L 288.51,73.47 L 281.74,72.07 L 282.64,63.95 L 291.04,62.86 L 295.37,63.64 L 302.82,63.03 L 304.90,67.71 L 313.04,70.79 L 319.38,68.97 L 324.89,62.87 L 334.04,62.90 L 341.32,64.03 L 345.55,63.44 L 358.54,64.41 L 359.78,63.43 Z","cx":357.1,"cy":106.0},"Kaduna":{"d":"M 264.86,136.62 L 269.32,136.10 L 276.58,130.79 L 281.20,129.81 L 282.93,137.80 L 288.80,140.23 L 291.64,143.52 L 297.10,144.41 L 301.44,147.94 L 304.34,153.06 L 303.02,162.03 L 303.99,166.86 L 300.38,169.88 L 301.28,173.03 L 306.95,173.81 L 309.83,176.83 L 313.10,177.12 L 310.77,183.64 L 315.29,187.79 L 314.38,191.49 L 310.01,194.43 L 308.11,200.58 L 309.82,205.66 L 307.89,207.24 L 307.62,217.63 L 303.99,223.22 L 303.39,229.08 L 309.49,236.75 L 310.39,241.16 L 309.04,244.32 L 303.35,253.62 L 298.91,252.90 L 294.60,248.16 L 289.23,246.78 L 284.11,252.91 L 279.88,252.54 L 279.92,244.75 L 275.69,241.51 L 275.42,238.90 L 271.35,236.73 L 267.39,242.15 L 257.34,239.03 L 254.44,236.92 L 251.26,239.45 L 241.60,239.69 L 236.99,234.30 L 243.11,225.18 L 240.22,222.37 L 240.90,212.65 L 240.02,205.50 L 238.66,204.15 L 228.26,204.22 L 222.88,202.23 L 220.66,199.31 L 228.57,192.62 L 229.64,189.61 L 223.13,186.88 L 224.27,181.51 L 222.67,178.48 L 218.42,178.55 L 217.32,173.01 L 213.50,172.61 L 212.57,176.27 L 209.36,175.82 L 203.20,178.10 L 201.54,175.18 L 197.49,175.77 L 190.99,180.56 L 186.64,186.17 L 180.90,181.98 L 182.48,177.60 L 181.93,166.06 L 184.38,161.76 L 186.77,161.06 L 193.34,153.98 L 197.90,153.22 L 208.11,153.18 L 212.45,149.50 L 216.25,140.47 L 221.18,137.19 L 227.40,138.46 L 225.20,143.89 L 230.34,145.43 L 235.18,149.04 L 238.47,146.30 L 236.91,142.01 L 245.10,141.60 L 246.06,138.12 L 249.66,135.83 L 255.13,137.66 L 258.85,140.92 L 263.38,139.13 L 264.86,136.62 Z","cx":271.2,"cy":192.1},"Kebbi":{"d":"M 82.53,43.96 L 89.38,44.44 L 93.12,43.19 L 98.49,47.42 L 111.07,52.07 L 115.06,48.36 L 117.19,49.80 L 114.46,60.11 L 117.42,65.20 L 116.26,74.26 L 117.61,78.64 L 117.42,85.00 L 108.17,85.60 L 106.32,89.78 L 106.85,108.05 L 105.13,115.83 L 102.09,124.11 L 107.01,127.66 L 110.32,124.19 L 120.01,119.86 L 127.24,120.55 L 132.72,121.96 L 137.84,120.79 L 140.01,118.33 L 145.34,118.58 L 147.57,121.65 L 152.84,123.66 L 160.32,123.46 L 163.32,122.34 L 170.74,124.25 L 171.88,127.92 L 170.22,134.05 L 176.13,138.61 L 177.41,149.02 L 174.81,147.85 L 171.02,151.81 L 167.85,152.14 L 158.08,156.19 L 149.46,156.74 L 148.13,155.74 L 147.75,147.28 L 144.07,144.30 L 143.28,139.11 L 136.69,137.25 L 122.37,139.97 L 114.87,143.33 L 114.60,147.20 L 121.89,150.56 L 126.22,150.98 L 129.07,153.15 L 129.98,158.39 L 127.90,162.73 L 131.06,165.12 L 130.19,167.95 L 122.91,170.84 L 116.89,171.36 L 117.50,182.37 L 120.47,186.38 L 120.85,189.55 L 117.29,192.51 L 108.56,194.72 L 108.16,199.40 L 103.08,198.62 L 104.12,191.02 L 100.85,186.97 L 101.00,181.91 L 104.86,176.90 L 111.75,172.22 L 113.87,160.43 L 109.86,159.07 L 103.07,154.52 L 98.84,153.17 L 78.00,154.26 L 73.69,152.90 L 64.77,148.05 L 61.72,148.18 L 60.67,148.17 L 50.88,139.98 L 54.38,123.73 L 56.09,119.98 L 60.04,116.66 L 57.42,112.61 L 56.96,108.74 L 59.52,105.69 L 57.62,98.73 L 58.95,91.16 L 58.20,78.58 L 73.19,66.38 L 80.88,54.80 L 82.53,43.96 Z","cx":79.3,"cy":121.2},"Kano":{"d":"M 290.18,76.11 L 293.97,83.53 L 295.97,78.61 L 303.64,75.73 L 309.92,77.33 L 310.28,82.02 L 314.28,84.81 L 316.19,90.28 L 322.82,91.81 L 323.36,101.66 L 327.43,101.32 L 330.48,104.57 L 334.54,101.63 L 336.38,107.34 L 335.53,112.38 L 332.81,116.12 L 336.66,119.22 L 339.14,123.79 L 343.83,127.23 L 338.09,132.71 L 337.27,137.46 L 332.82,139.19 L 329.61,138.50 L 323.24,143.95 L 318.88,149.79 L 314.23,150.42 L 312.58,156.85 L 313.26,163.94 L 317.07,170.33 L 313.10,177.12 L 309.83,176.83 L 306.95,173.81 L 301.28,173.03 L 300.38,169.88 L 303.99,166.86 L 303.02,162.03 L 304.34,153.06 L 301.44,147.94 L 297.10,144.41 L 291.64,143.52 L 288.80,140.23 L 282.93,137.80 L 281.20,129.81 L 276.58,130.79 L 269.32,136.10 L 264.86,136.62 L 261.96,134.49 L 260.43,129.81 L 261.71,125.92 L 271.14,121.93 L 268.61,115.72 L 267.46,108.85 L 268.16,103.83 L 267.81,91.73 L 273.00,88.04 L 282.77,83.94 L 285.41,76.80 L 290.18,76.11 Z","cx":302.2,"cy":126.6},"Kogi":{"d":"M 186.60,268.29 L 190.62,270.02 L 195.70,276.10 L 197.76,282.73 L 202.95,286.74 L 209.56,294.64 L 217.80,284.22 L 224.96,283.97 L 223.22,288.23 L 225.65,292.42 L 226.09,297.39 L 225.11,304.95 L 226.99,309.09 L 234.46,305.82 L 244.47,303.10 L 250.19,302.54 L 259.30,303.55 L 259.48,310.55 L 263.76,316.74 L 264.23,327.79 L 265.23,332.24 L 268.93,332.84 L 266.56,344.56 L 258.69,349.58 L 257.64,354.31 L 250.73,350.82 L 247.87,348.91 L 241.50,351.95 L 236.51,357.95 L 231.68,361.06 L 227.66,365.41 L 223.55,361.69 L 221.35,365.74 L 217.21,369.81 L 216.16,375.34 L 213.52,378.08 L 209.28,378.17 L 206.59,369.58 L 206.31,363.39 L 209.59,356.63 L 210.97,345.80 L 207.31,340.46 L 201.25,341.96 L 198.32,335.29 L 193.83,335.73 L 189.00,331.21 L 184.21,333.57 L 181.62,332.51 L 182.13,327.98 L 177.48,325.88 L 171.82,319.72 L 172.39,316.38 L 166.63,316.75 L 157.54,312.66 L 156.53,308.39 L 159.24,303.78 L 151.96,304.86 L 152.86,301.08 L 152.81,297.98 L 148.96,295.90 L 143.35,288.48 L 147.07,282.58 L 152.97,277.49 L 156.15,281.02 L 165.55,284.37 L 180.96,285.48 L 184.62,270.98 L 186.60,268.29 Z","cx":219.3,"cy":322.8},"Katsina":{"d":"M 324.89,62.87 L 319.38,68.97 L 313.04,70.79 L 304.90,67.71 L 302.82,63.03 L 295.37,63.64 L 291.04,62.86 L 282.64,63.95 L 281.74,72.07 L 288.51,73.47 L 290.18,76.11 L 285.41,76.80 L 282.77,83.94 L 273.00,88.04 L 267.81,91.73 L 268.16,103.83 L 267.46,108.85 L 268.61,115.72 L 271.14,121.93 L 261.71,125.92 L 260.43,129.81 L 261.96,134.49 L 264.86,136.62 L 263.38,139.13 L 258.85,140.92 L 255.13,137.66 L 249.66,135.83 L 246.06,138.12 L 245.10,141.60 L 236.91,142.01 L 238.47,146.30 L 235.18,149.04 L 230.34,145.43 L 225.20,143.89 L 227.40,138.46 L 221.18,137.19 L 222.21,130.47 L 219.93,126.02 L 221.95,115.70 L 229.53,115.62 L 236.62,110.55 L 237.74,107.72 L 231.58,102.88 L 233.93,95.89 L 230.69,86.04 L 228.83,72.79 L 228.09,63.11 L 229.25,54.53 L 233.18,53.29 L 237.45,49.05 L 247.35,49.07 L 266.26,37.88 L 281.38,40.13 L 288.84,44.22 L 296.82,51.85 L 304.28,52.68 L 308.47,57.66 L 324.89,62.87 Z","cx":250.6,"cy":93.8},"Kwara":{"d":"M 59.58,198.08 L 73.08,197.07 L 75.99,197.81 L 87.28,210.50 L 93.42,218.17 L 97.48,219.68 L 97.16,230.08 L 98.92,233.34 L 105.03,232.70 L 106.72,239.29 L 112.63,241.98 L 113.95,248.04 L 117.10,249.10 L 126.45,246.11 L 132.72,249.41 L 137.85,255.21 L 142.87,254.83 L 150.04,256.56 L 167.15,267.64 L 179.94,266.92 L 186.60,268.29 L 184.62,270.98 L 180.96,285.48 L 165.55,284.37 L 156.15,281.02 L 152.97,277.49 L 147.07,282.58 L 143.35,288.48 L 148.96,295.90 L 152.81,297.98 L 152.86,301.08 L 144.89,302.22 L 143.63,306.26 L 137.27,305.97 L 134.55,303.62 L 129.27,303.03 L 124.79,303.34 L 121.84,300.32 L 112.63,302.77 L 103.85,302.85 L 101.72,301.50 L 99.21,294.23 L 94.03,289.00 L 92.34,282.32 L 86.98,272.96 L 85.26,267.44 L 86.09,263.82 L 92.96,256.60 L 83.72,255.68 L 77.18,253.04 L 69.46,245.50 L 64.73,247.24 L 62.98,253.24 L 44.02,264.53 L 38.37,267.15 L 33.46,265.91 L 22.00,275.08 L 16.14,275.67 L 13.56,277.90 L 13.60,269.55 L 12.50,265.93 L 15.52,256.05 L 15.13,251.31 L 30.49,249.48 L 33.94,240.45 L 32.63,232.56 L 38.57,224.44 L 43.60,219.32 L 43.44,213.67 L 48.90,211.51 L 52.56,211.46 L 56.19,206.70 L 56.86,200.79 L 59.58,198.08 Z","cx":105.7,"cy":252.2},"Lagos":{"d":"M 11.98,380.87 L 17.31,381.56 L 23.30,378.63 L 34.37,378.48 L 38.70,369.22 L 44.57,372.38 L 49.13,369.97 L 79.48,370.28 L 79.01,376.44 L 83.96,379.11 L 84.42,381.12 L 93.20,382.96 L 93.19,385.88 L 74.03,382.93 L 67.08,382.55 L 59.08,383.31 L 46.88,383.44 L 41.66,384.29 L 19.35,384.88 L 11.69,385.77 L 11.98,380.87 Z","cx":57.9,"cy":377.5},"Nasarawa":{"d":"M 257.34,239.03 L 267.39,242.15 L 271.35,236.73 L 275.42,238.90 L 275.69,241.51 L 279.92,244.75 L 279.88,252.54 L 284.11,252.91 L 289.23,246.78 L 294.60,248.16 L 298.91,252.90 L 303.35,253.62 L 309.04,244.32 L 314.04,246.41 L 314.55,250.01 L 317.85,253.53 L 329.84,255.13 L 327.01,260.70 L 322.99,263.29 L 320.23,268.49 L 322.70,272.82 L 323.62,278.83 L 330.73,282.06 L 337.35,281.94 L 345.23,279.69 L 353.59,283.18 L 356.81,287.00 L 352.51,290.62 L 342.64,288.82 L 340.97,292.83 L 343.99,295.95 L 344.55,301.90 L 334.51,308.83 L 324.99,301.64 L 321.78,302.38 L 312.30,300.80 L 304.16,297.81 L 298.79,297.82 L 295.60,299.59 L 293.83,305.06 L 297.63,314.43 L 296.64,316.41 L 289.65,312.36 L 284.55,311.67 L 273.54,306.55 L 259.30,303.55 L 250.19,302.54 L 244.47,303.10 L 234.46,305.82 L 226.99,309.09 L 225.11,304.95 L 226.09,297.39 L 225.65,292.42 L 223.22,288.23 L 224.96,283.97 L 233.95,282.57 L 240.04,280.74 L 245.65,277.82 L 251.06,269.77 L 253.89,259.15 L 253.98,247.26 L 257.34,239.03 Z","cx":285.2,"cy":275.3},"Niger":{"d":"M 61.72,148.18 L 64.77,148.05 L 73.69,152.90 L 78.00,154.26 L 98.84,153.17 L 103.07,154.52 L 109.86,159.07 L 113.87,160.43 L 111.75,172.22 L 104.86,176.90 L 101.00,181.91 L 100.85,186.97 L 104.12,191.02 L 103.08,198.62 L 108.16,199.40 L 108.56,194.72 L 117.29,192.51 L 120.85,189.55 L 120.47,186.38 L 117.50,182.37 L 116.89,171.36 L 122.91,170.84 L 130.19,167.95 L 131.06,165.12 L 127.90,162.73 L 129.98,158.39 L 129.07,153.15 L 126.22,150.98 L 121.89,150.56 L 114.60,147.20 L 114.87,143.33 L 122.37,139.97 L 136.69,137.25 L 143.28,139.11 L 144.07,144.30 L 147.75,147.28 L 148.13,155.74 L 149.46,156.74 L 158.08,156.19 L 167.85,152.14 L 171.02,151.81 L 174.81,147.85 L 177.41,149.02 L 183.16,157.82 L 184.38,161.76 L 181.93,166.06 L 182.48,177.60 L 180.90,181.98 L 186.64,186.17 L 190.99,180.56 L 197.49,175.77 L 201.54,175.18 L 203.20,178.10 L 209.36,175.82 L 212.57,176.27 L 213.50,172.61 L 217.32,173.01 L 218.42,178.55 L 222.67,178.48 L 224.27,181.51 L 223.13,186.88 L 229.64,189.61 L 228.57,192.62 L 220.66,199.31 L 222.88,202.23 L 228.26,204.22 L 238.66,204.15 L 240.02,205.50 L 240.90,212.65 L 240.22,222.37 L 243.11,225.18 L 236.99,234.30 L 241.60,239.69 L 234.60,249.59 L 225.00,242.78 L 213.66,243.73 L 213.37,254.69 L 213.98,278.96 L 215.18,284.01 L 217.80,284.22 L 209.56,294.64 L 202.95,286.74 L 197.76,282.73 L 195.70,276.10 L 190.62,270.02 L 186.60,268.29 L 179.94,266.92 L 167.15,267.64 L 150.04,256.56 L 142.87,254.83 L 137.85,255.21 L 132.72,249.41 L 126.45,246.11 L 117.10,249.10 L 113.95,248.04 L 112.63,241.98 L 106.72,239.29 L 105.03,232.70 L 98.92,233.34 L 97.16,230.08 L 97.48,219.68 L 93.42,218.17 L 87.28,210.50 L 75.99,197.81 L 73.08,197.07 L 59.58,198.08 L 59.98,195.66 L 55.29,190.65 L 58.38,182.82 L 60.46,181.75 L 65.38,184.30 L 68.66,174.29 L 68.13,169.33 L 63.55,163.34 L 64.64,158.04 L 61.92,153.36 L 61.72,148.18 Z","cx":166.0,"cy":215.4},"Ogun":{"d":"M 10.00,309.69 L 14.82,306.24 L 19.17,306.82 L 20.50,309.41 L 21.08,316.52 L 26.23,313.02 L 26.53,316.92 L 24.81,324.95 L 28.98,328.97 L 32.40,335.06 L 36.71,337.86 L 41.39,337.70 L 44.55,331.08 L 47.96,330.12 L 50.66,334.53 L 54.39,332.94 L 59.40,333.12 L 60.61,339.21 L 63.35,340.76 L 65.00,347.93 L 61.83,352.30 L 71.38,351.74 L 79.93,348.92 L 83.27,347.15 L 84.92,351.60 L 92.36,350.47 L 94.76,356.21 L 97.24,354.62 L 104.13,355.13 L 102.67,362.20 L 96.18,367.33 L 93.77,371.30 L 95.42,375.64 L 100.78,376.20 L 105.20,373.72 L 105.87,380.21 L 101.80,383.69 L 104.50,386.41 L 100.77,388.44 L 93.19,385.88 L 93.20,382.96 L 84.42,381.12 L 83.96,379.11 L 79.01,376.44 L 79.48,370.28 L 49.13,369.97 L 44.57,372.38 L 38.70,369.22 L 34.37,378.48 L 23.30,378.63 L 17.31,381.56 L 11.98,380.87 L 13.74,376.02 L 12.65,373.01 L 15.41,369.81 L 12.57,364.12 L 13.48,358.13 L 12.11,355.22 L 15.71,352.48 L 13.34,349.91 L 15.33,346.59 L 13.56,341.49 L 13.46,333.68 L 15.73,329.83 L 12.60,325.54 L 12.56,314.94 L 10.00,309.69 Z","cx":39.8,"cy":347.5},"Ondo":{"d":"M 166.63,316.75 L 172.39,316.38 L 171.82,319.72 L 177.48,325.88 L 173.53,329.07 L 172.56,332.24 L 174.45,337.47 L 170.14,342.64 L 167.28,350.15 L 165.01,353.45 L 162.94,364.41 L 159.55,367.97 L 156.86,366.39 L 153.21,368.97 L 151.74,361.06 L 135.70,361.51 L 133.85,366.10 L 130.28,369.66 L 129.71,374.55 L 132.29,378.07 L 129.24,385.44 L 126.39,386.64 L 125.00,390.26 L 131.83,398.19 L 126.25,411.73 L 114.92,399.45 L 100.77,388.44 L 104.50,386.41 L 101.80,383.69 L 105.87,380.21 L 105.20,373.72 L 100.78,376.20 L 95.42,375.64 L 93.77,371.30 L 96.18,367.33 L 102.67,362.20 L 104.13,355.13 L 108.02,349.98 L 113.35,347.18 L 117.73,349.98 L 119.70,348.99 L 119.47,342.76 L 120.73,337.49 L 125.64,333.81 L 129.32,332.64 L 141.23,332.74 L 143.63,334.95 L 145.21,340.38 L 151.52,338.03 L 155.35,331.31 L 156.73,324.78 L 161.35,319.88 L 166.63,316.75 Z","cx":118.1,"cy":363.3},"Osun":{"d":"M 103.85,302.85 L 112.63,302.77 L 121.84,300.32 L 124.79,303.34 L 129.27,303.03 L 128.05,307.29 L 123.37,310.57 L 121.84,314.00 L 121.99,324.45 L 125.64,333.81 L 120.73,337.49 L 119.47,342.76 L 119.70,348.99 L 117.73,349.98 L 113.35,347.18 L 108.02,349.98 L 104.13,355.13 L 97.24,354.62 L 94.76,356.21 L 92.36,350.47 L 84.92,351.60 L 83.27,347.15 L 79.93,348.92 L 81.81,340.99 L 83.51,329.69 L 77.83,323.49 L 79.76,312.26 L 83.72,313.12 L 89.45,306.74 L 94.78,312.69 L 104.28,305.42 L 103.85,302.85 Z","cx":102.1,"cy":327.1},"Oyo":{"d":"M 13.56,277.90 L 16.14,275.67 L 22.00,275.08 L 33.46,265.91 L 38.37,267.15 L 44.02,264.53 L 62.98,253.24 L 64.73,247.24 L 69.46,245.50 L 77.18,253.04 L 83.72,255.68 L 92.96,256.60 L 86.09,263.82 L 85.26,267.44 L 86.98,272.96 L 92.34,282.32 L 94.03,289.00 L 99.21,294.23 L 101.72,301.50 L 103.85,302.85 L 104.28,305.42 L 94.78,312.69 L 89.45,306.74 L 83.72,313.12 L 79.76,312.26 L 77.83,323.49 L 83.51,329.69 L 81.81,340.99 L 79.93,348.92 L 71.38,351.74 L 61.83,352.30 L 65.00,347.93 L 63.35,340.76 L 60.61,339.21 L 59.40,333.12 L 54.39,332.94 L 50.66,334.53 L 47.96,330.12 L 44.55,331.08 L 41.39,337.70 L 36.71,337.86 L 32.40,335.06 L 28.98,328.97 L 24.81,324.95 L 26.53,316.92 L 26.23,313.02 L 21.08,316.52 L 20.50,309.41 L 19.17,306.82 L 14.82,306.24 L 10.00,309.69 L 12.52,301.22 L 13.79,293.99 L 10.87,288.32 L 13.93,280.43 L 13.56,277.90 Z","cx":56.8,"cy":297.7},"Plateau":{"d":"M 315.29,187.79 L 321.34,188.17 L 324.08,195.33 L 324.05,205.25 L 332.91,203.49 L 336.00,207.70 L 336.02,213.39 L 334.10,216.97 L 342.86,226.41 L 351.15,227.80 L 359.26,227.34 L 362.80,226.20 L 365.13,222.03 L 368.98,220.98 L 366.61,215.00 L 369.29,212.42 L 384.98,219.95 L 393.93,223.75 L 404.05,229.73 L 405.31,232.89 L 405.68,242.67 L 407.54,245.76 L 408.71,257.92 L 407.27,260.39 L 397.43,265.10 L 388.20,266.70 L 380.70,275.82 L 374.97,278.84 L 368.76,284.99 L 359.91,287.20 L 356.81,287.00 L 353.59,283.18 L 345.23,279.69 L 337.35,281.94 L 330.73,282.06 L 323.62,278.83 L 322.70,272.82 L 320.23,268.49 L 322.99,263.29 L 327.01,260.70 L 329.84,255.13 L 317.85,253.53 L 314.55,250.01 L 314.04,246.41 L 309.04,244.32 L 310.39,241.16 L 309.49,236.75 L 303.39,229.08 L 303.99,223.22 L 307.62,217.63 L 307.89,207.24 L 309.82,205.66 L 308.11,200.58 L 310.01,194.43 L 314.38,191.49 L 315.29,187.79 Z","cx":357.7,"cy":239.0},"Rivers":{"d":"M 253.83,479.32 L 253.85,479.34 L 255.21,481.92 L 247.04,482.78 L 243.18,480.21 L 241.81,475.30 L 245.44,476.65 L 246.73,477.59 L 248.17,477.60 L 250.49,476.67 L 253.83,479.32 Z M 230.96,477.23 L 231.32,481.98 L 227.39,482.20 L 225.25,471.41 L 229.16,473.58 L 230.96,477.23 Z M 216.14,465.34 L 219.68,468.08 L 224.46,477.65 L 226.24,485.53 L 219.13,484.63 L 216.67,477.40 L 217.93,473.37 L 215.12,471.10 L 216.14,465.34 Z M 211.93,473.96 L 208.20,471.93 L 204.50,466.85 L 199.22,468.91 L 195.36,464.10 L 197.57,456.76 L 196.94,451.64 L 200.57,445.28 L 202.80,445.43 L 206.96,438.83 L 206.43,436.02 L 201.06,435.05 L 203.60,432.39 L 203.75,428.10 L 207.35,421.76 L 206.66,418.61 L 209.50,419.82 L 207.27,430.41 L 213.36,432.20 L 212.06,438.17 L 215.14,443.09 L 218.61,444.75 L 227.84,445.54 L 238.63,444.80 L 239.64,448.48 L 234.95,455.37 L 233.71,459.26 L 236.81,461.52 L 242.49,460.43 L 246.59,461.07 L 250.87,463.66 L 252.95,468.36 L 252.71,477.23 L 249.47,476.05 L 248.14,477.38 L 246.58,477.20 L 245.37,475.29 L 244.35,476.07 L 242.31,475.37 L 240.64,474.00 L 239.27,475.32 L 236.17,475.18 L 234.50,471.68 L 229.07,468.16 L 224.00,470.34 L 217.34,463.23 L 213.00,464.98 L 214.73,471.01 L 217.32,473.69 L 215.80,476.30 L 217.71,484.31 L 211.77,486.53 L 211.06,478.96 L 211.93,473.96 Z","cx":216.7,"cy":453.5},"Sokoto":{"d":"M 214.77,45.06 L 206.60,50.28 L 198.92,49.27 L 196.00,47.12 L 190.16,46.43 L 188.69,52.44 L 184.26,51.30 L 178.63,53.98 L 179.23,65.29 L 174.88,67.39 L 161.87,68.76 L 157.17,75.57 L 153.17,78.57 L 154.89,87.91 L 152.31,91.67 L 136.72,92.38 L 129.19,91.05 L 127.69,95.11 L 127.78,109.59 L 127.24,120.55 L 120.01,119.86 L 110.32,124.19 L 107.01,127.66 L 102.09,124.11 L 105.13,115.83 L 106.85,108.05 L 106.32,89.78 L 108.17,85.60 L 117.42,85.00 L 117.61,78.64 L 116.26,74.26 L 117.42,65.20 L 114.46,60.11 L 117.19,49.80 L 115.06,48.36 L 111.07,52.07 L 98.49,47.42 L 93.12,43.19 L 89.38,44.44 L 82.53,43.96 L 82.59,30.97 L 85.94,30.95 L 99.31,19.43 L 119.60,15.47 L 121.54,17.17 L 139.59,17.29 L 143.83,12.35 L 152.39,10.00 L 163.72,14.88 L 180.30,20.60 L 183.53,22.46 L 190.22,21.26 L 197.12,24.52 L 209.94,36.82 L 214.77,45.06 Z","cx":138.3,"cy":71.5},"Taraba":{"d":"M 404.05,229.73 L 407.76,227.61 L 412.48,228.23 L 421.03,224.35 L 429.46,225.25 L 452.31,224.97 L 457.89,234.67 L 463.33,236.57 L 467.57,244.45 L 467.48,249.27 L 472.97,252.82 L 474.81,257.35 L 469.16,269.45 L 469.12,275.76 L 464.18,279.96 L 457.20,289.22 L 450.03,296.22 L 446.02,301.34 L 448.07,306.76 L 452.60,312.51 L 457.08,307.69 L 460.79,308.63 L 468.87,317.97 L 468.40,322.40 L 471.82,332.33 L 467.83,336.75 L 466.23,340.68 L 467.41,351.46 L 461.94,351.60 L 455.02,359.35 L 453.70,371.34 L 452.06,374.05 L 447.69,374.57 L 447.18,377.59 L 442.55,379.28 L 434.17,376.38 L 431.07,377.49 L 431.26,370.44 L 422.12,369.26 L 416.92,361.76 L 418.26,357.90 L 414.43,356.85 L 410.10,352.46 L 406.09,350.76 L 403.19,357.49 L 399.58,358.77 L 386.91,359.99 L 383.77,352.57 L 374.66,360.83 L 370.03,366.06 L 365.88,365.22 L 361.49,378.73 L 358.29,378.37 L 359.82,371.77 L 359.62,363.23 L 361.32,353.95 L 363.99,348.98 L 370.02,343.63 L 369.78,338.87 L 372.17,331.52 L 371.10,327.62 L 364.34,321.52 L 356.61,313.02 L 343.96,311.21 L 337.93,311.98 L 332.99,314.10 L 334.51,308.83 L 344.55,301.90 L 343.99,295.95 L 340.97,292.83 L 342.64,288.82 L 352.51,290.62 L 356.81,287.00 L 359.91,287.20 L 368.76,284.99 L 374.97,278.84 L 380.70,275.82 L 388.20,266.70 L 397.43,265.10 L 407.27,260.39 L 408.71,257.92 L 407.54,245.76 L 405.68,242.67 L 405.31,232.89 L 404.05,229.73 Z","cx":395.3,"cy":301.6},"Yobe":{"d":"M 495.33,50.75 L 494.06,60.44 L 495.06,63.49 L 500.10,67.98 L 500.49,70.94 L 497.09,76.72 L 491.39,81.73 L 492.29,91.12 L 490.14,106.84 L 491.51,112.76 L 487.69,120.03 L 492.29,121.70 L 494.82,124.68 L 494.70,129.01 L 491.04,132.54 L 485.31,142.19 L 485.76,150.21 L 479.14,155.58 L 470.08,157.99 L 466.06,164.00 L 466.28,170.70 L 461.07,174.87 L 455.60,174.87 L 454.73,169.32 L 455.70,159.85 L 455.16,155.97 L 448.96,150.00 L 445.12,144.90 L 438.27,139.90 L 430.84,137.94 L 426.73,139.84 L 422.97,138.33 L 424.79,126.84 L 418.05,110.19 L 416.69,97.46 L 414.14,93.76 L 412.74,84.37 L 406.50,79.46 L 404.37,68.02 L 402.59,65.33 L 395.43,63.35 L 389.79,65.39 L 386.33,56.15 L 384.55,55.16 L 370.31,60.36 L 366.08,64.95 L 359.78,63.43 L 368.37,53.85 L 375.86,46.43 L 386.38,41.21 L 399.35,40.47 L 409.49,36.75 L 425.30,35.91 L 444.40,35.99 L 452.12,36.94 L 460.81,40.25 L 470.25,42.27 L 481.22,49.92 L 486.15,48.46 L 495.33,50.75 Z","cx":454.0,"cy":102.2},"Zamfara":{"d":"M 229.25,54.53 L 228.09,63.11 L 228.83,72.79 L 230.69,86.04 L 233.93,95.89 L 231.58,102.88 L 237.74,107.72 L 236.62,110.55 L 229.53,115.62 L 221.95,115.70 L 219.93,126.02 L 222.21,130.47 L 221.18,137.19 L 216.25,140.47 L 212.45,149.50 L 208.11,153.18 L 197.90,153.22 L 193.34,153.98 L 186.77,161.06 L 184.38,161.76 L 183.16,157.82 L 177.41,149.02 L 176.13,138.61 L 170.22,134.05 L 171.88,127.92 L 170.74,124.25 L 163.32,122.34 L 160.32,123.46 L 152.84,123.66 L 147.57,121.65 L 145.34,118.58 L 140.01,118.33 L 137.84,120.79 L 132.72,121.96 L 127.24,120.55 L 127.78,109.59 L 127.69,95.11 L 129.19,91.05 L 136.72,92.38 L 152.31,91.67 L 154.89,87.91 L 153.17,78.57 L 157.17,75.57 L 161.87,68.76 L 174.88,67.39 L 179.23,65.29 L 178.63,53.98 L 184.26,51.30 L 188.69,52.44 L 190.16,46.43 L 196.00,47.12 L 198.92,49.27 L 206.60,50.28 L 214.77,45.06 L 222.45,55.10 L 229.25,54.53 Z","cx":181.2,"cy":105.3}}};
+const stateNamesFromMap = Object.keys(MAP.states);
+const PL_COLORS = {1:'#AE4632',2:'#D69A3B',3:'#5E9464',4:'#0B5D3B'};
+const PL_LABELS = {1:'Below Partially Meets',2:'Partially Meets',3:'Meets',4:'Exceeds'};
+
+const SUBDOMAINS = [
+  {group:'Reading skill', cols:[
+    {key:'psub1_1',label:'Reading comprehension'},
+    {key:'psub1_2',label:'Grammatical accuracy'}
+  ]},
+  {group:'Content area', cols:[
+    {key:'psub2_1',label:'Explicit'},
+    {key:'psub2_2',label:'Implicit'},
+    {key:'psub2_3',label:'Vocabulary'},
+    {key:'psub2_4',label:'Verb'},
+    {key:'psub2_5',label:'Noun'},
+    {key:'psub2_6',label:'Phonics'}
+  ]},
+  {group:'Cognitive demand', cols:[
+    {key:'psub3_1',label:'Knowledge'},
+    {key:'psub3_2',label:'Reasoning'},
+    {key:'psub3_3',label:'Application'}
+  ]}
+];
+
+let filters = {State:'All', Gender_L:'All', Loc_L:'All', Own_L:'All'};
+
+// ---------- populate state select ----------
+const stateNames = stateNamesFromMap.slice().sort();
+const fState = document.getElementById('fState');
+fState.innerHTML = '<option value="All">All states &amp; FCT</option>' +
+  stateNames.map(s=>`<option value="${s}">${s}</option>`).join('');
+
+// ---------- helpers ----------
+function matches(row, ignore){
+  if(filters.State!=='All' && ignore!=='State' && row.State_clean!==filters.State) return false;
+  if(filters.Gender_L!=='All' && ignore!=='Gender_L' && row.Gender_L!==filters.Gender_L) return false;
+  if(filters.Loc_L!=='All' && ignore!=='Loc_L' && row.Loc_L!==filters.Loc_L) return false;
+  if(filters.Own_L!=='All' && ignore!=='Own_L' && row.Own_L!==filters.Own_L) return false;
+  return true;
+}
+
+function aggregate(rows){
+  let n=0, ssSum=0, pctSum=0, pl={1:0,2:0,3:0,4:0};
+  let sd = {};
+  SUBDOMAINS.forEach(g=>g.cols.forEach(c=>sd[c.key]=0));
+  rows.forEach(r=>{
+    n += r.n;
+    ssSum += r.mean_ss * r.n;
+    pctSum += r.mean_pct * r.n;
+    pl[1]+=r.pl1; pl[2]+=r.pl2; pl[3]+=r.pl3; pl[4]+=r.pl4;
+    Object.keys(sd).forEach(k=> sd[k]+= r[k]*r.n );
+  });
+  const out = {n, meanSS: n? ssSum/n:0, meanPct: n? pctSum/n:0, pl};
+  Object.keys(sd).forEach(k=> out[k] = n? sd[k]/n : 0 );
+  return out;
+}
+
+function filteredRows(ignore){
+  return RAW.filter(r=>matches(r, ignore));
+}
+
+function fmt1(x){ return (Math.round(x*10)/10).toFixed(1); }
+function fmt0(x){ return Math.round(x).toString(); }
+
+// ---------- KPI row ----------
+function renderKPIs(){
+  const rows = filteredRows(null);
+  const agg = aggregate(rows);
+
+  const genderRows_M = RAW.filter(r=>matches(r,'Gender_L') && r.Gender_L==='Male');
+  const genderRows_F = RAW.filter(r=>matches(r,'Gender_L') && r.Gender_L==='Female');
+  const aggM = aggregate(genderRows_M), aggF = aggregate(genderRows_F);
+  const gap = aggF.meanSS - aggM.meanSS;
+
+  const meetsPlus = agg.n? ((agg.pl[3]+agg.pl[4])/agg.n*100) : 0;
+  const belowShare = agg.n? (agg.pl[1]/agg.n*100) : 0;
+
+  const stateCount = filters.State==='All' ? 37 : 1;
+
+  const kpis = [
+    {label:'Pupils assessed', value: agg.n.toLocaleString(), unit:'', sub:''},
+    {label:'Average scale score', value: fmt0(agg.meanSS), unit:'/ 600', sub: fmt1(agg.meanPct)+'% correct on average'},
+    {label:'Meets or exceeds standard', value: fmt1(meetsPlus), unit:'%', sub: fmt1(belowShare)+'% below partially meets', subClass: meetsPlus>=40?'pos':'neg'},
+    {label:'Female–male gap', value: fmt1(Math.abs(gap)), unit:'pts', sub: gap>=0? 'in favour of female pupils':'in favour of male pupils'},
+    {label:'Coverage', value: stateCount, unit: stateCount===1?'state':'states + FCT', sub: filters.State==='All'? 'national view' : filters.State}
+  ];
+
+  document.getElementById('kpiRow').innerHTML = kpis.map((k,i)=>`
+    <div class="kpi">
+      <div class="label">${k.label}</div>
+      <div class="value"><span class="cv" data-final="${k.value}" data-unit="${k.unit}">0</span><span class="unit">${k.unit}</span></div>
+      <div class="sub ${k.subClass||''}">${k.sub}</div>
+    </div>`).join('');
+
+  document.querySelectorAll('.cv').forEach(el=>{
+    const raw = el.getAttribute('data-final');
+    const num = parseFloat(String(raw).replace(/,/g,''));
+    if(isNaN(num)){ el.textContent = raw; return; }
+    const hasComma = /,/.test(raw);
+    const decimals = (String(raw).split('.')[1]||'').length;
+    const start = performance.now(), dur = 650;
+    function step(t){
+      const p = Math.min(1, (t-start)/dur);
+      const eased = 1-Math.pow(1-p,3);
+      const v = num*eased;
+      el.textContent = decimals ? v.toFixed(decimals) : Math.round(v).toLocaleString();
+      if(p<1) requestAnimationFrame(step);
+      else el.textContent = decimals ? num.toFixed(decimals) : (hasComma? num.toLocaleString(): Math.round(num).toString());
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+// ---------- Map ----------
+function stateAgg(name){
+  const rows = RAW.filter(r=> r.State_clean===name && matches(r,'State'));
+  return aggregate(rows);
+}
+
+let ssDomain = [445, 500];
+function colorForScore(v){
+  const t = Math.max(0, Math.min(1, (v-ssDomain[0])/(ssDomain[1]-ssDomain[0])));
+  const stops = [[0.00,'#AE4632'],[0.42,'#D69A3B'],[0.68,'#8FB08D'],[1.00,'#0B5D3B']];
+  let a=stops[0], b=stops[stops.length-1];
+  for(let i=0;i<stops.length-1;i++){
+    if(t>=stops[i][0] && t<=stops[i+1][0]){ a=stops[i]; b=stops[i+1]; break; }
+  }
+  const localT = (t-a[0])/((b[0]-a[0])||1);
+  return lerpColor(a[1], b[1], localT);
+}
+function lerpColor(c1,c2,t){
+  const p=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];
+  const [r1,g1,b1]=p(c1),[r2,g2,b2]=p(c2);
+  const r=Math.round(r1+(r2-r1)*t), g=Math.round(g1+(g2-g1)*t), b=Math.round(b1+(b2-b1)*t);
+  return `rgb(${r},${g},${b})`;
+}
+
+const tooltip = document.getElementById('tooltip');
+
+function renderMap(){
+  const svg = document.getElementById('mapSvg');
+  svg.setAttribute('viewBox', MAP.viewBox);
+
+  // set live color domain from currently visible states
+  const allAggs = stateNames.map(s=>stateAgg(s)).filter(a=>a.n>0);
+  if(allAggs.length){
+    ssDomain = [Math.min(...allAggs.map(a=>a.meanSS))-3, Math.max(...allAggs.map(a=>a.meanSS))+3];
+  }
+  document.getElementById('legendMin').textContent = fmt0(ssDomain[0]);
+  document.getElementById('legendMax').textContent = fmt0(ssDomain[1]);
+
+  let html = '';
+  Object.entries(MAP.states).forEach(([name, geo])=>{
+    const agg = stateAgg(name);
+    const fill = agg.n ? colorForScore(agg.meanSS) : '#E2DCC9';
+    const selected = filters.State===name ? 'selected' : '';
+    html += `<path class="state-path ${selected}" data-state="${name}" d="${geo.d}" fill="${fill}"></path>`;
+  });
+  // small dot markers on the very top / very bottom performer for quick scanning
+  if(allAggs.length){
+    const sorted = stateNames.map(s=>({s,a:stateAgg(s)})).filter(x=>x.a.n>0).sort((a,b)=>b.a.meanSS-a.a.meanSS);
+    const best = sorted[0], worst = sorted[sorted.length-1];
+    [best,worst].forEach(entry=>{
+      const geo = MAP.states[entry.s];
+      html += `<circle class="state-dot hot" cx="${geo.cx}" cy="${geo.cy}" r="4.2"></circle>`;
+    });
+  }
+  svg.innerHTML = html;
+
+  svg.querySelectorAll('.state-path').forEach(tile=>{
+    tile.addEventListener('click', ()=>{
+      const s = tile.getAttribute('data-state');
+      filters.State = (filters.State===s) ? 'All' : s;
+      fState.value = filters.State;
+      renderAll();
+    });
+    tile.addEventListener('mousemove', (e)=>{
+      const s = tile.getAttribute('data-state');
+      const agg = stateAgg(s);
+      tooltip.style.display='block';
+      tooltip.style.left = (e.clientX+14)+'px';
+      tooltip.style.top = (e.clientY+10)+'px';
+      tooltip.innerHTML = `<b>${s}</b><br>Scale score: ${agg.n?fmt0(agg.meanSS):'n/a'}<br>Pupils: ${agg.n.toLocaleString()}<br>Meets/exceeds: ${agg.n?fmt1((agg.pl[3]+agg.pl[4])/agg.n*100):'0'}%`;
+    });
+    tile.addEventListener('mouseleave', ()=>{ tooltip.style.display='none'; });
+  });
+}
+
+// ---------- Ranking (stacked proficiency bars) ----------
+let rankMode = 'top';
+function renderRanking(){
+  const all = stateNames.map(s=>({name:s, agg: stateAgg(s)})).filter(x=>x.agg.n>0);
+  all.sort((a,b)=> b.agg.meanSS - a.agg.meanSS);
+  let list = all;
+  if(rankMode==='top') list = all.slice(0,6);
+  else if(rankMode==='bottom') list = all.slice(-6).reverse();
+
+  document.getElementById('rankList').innerHTML = list.map(({name,agg})=>{
+    const total = agg.n || 1;
+    const segs = [1,2,3,4].map(k=>{
+      const pct = agg.pl[k]/total*100;
+      return `<span style="width:${pct}%;background:${PL_COLORS[k]}" title="${PL_LABELS[k]}: ${fmt1(pct)}%"></span>`;
+    }).join('');
+    return `<li data-state="${name}">
+      <div class="st-top"><span class="st-name">${name}</span><span class="st-score">${fmt0(agg.meanSS)}</span></div>
+      <div class="st-bar">${segs}</div>
+    </li>`;
+  }).join('');
+
+  document.querySelectorAll('#rankList li').forEach(li=>{
+    li.addEventListener('click', ()=>{
+      const s = li.getAttribute('data-state');
+      filters.State = (filters.State===s) ? 'All' : s;
+      fState.value = filters.State;
+      renderAll();
+    });
+  });
+}
+
+// ---------- Insight callouts ----------
+function renderInsights(){
+  const stateAggs = stateNames.map(s=>({name:s, agg: stateAgg(s)})).filter(x=>x.agg.n>0);
+  if(!stateAggs.length){ document.getElementById('insightRow').innerHTML=''; return; }
+  stateAggs.sort((a,b)=>b.agg.meanSS-a.agg.meanSS);
+  const best = stateAggs[0], worst = stateAggs[stateAggs.length-1];
+  const spread = best.agg.meanSS - worst.agg.meanSS;
+
+  const mAgg = aggregate(RAW.filter(r=>matches(r,'Gender_L') && r.Gender_L==='Male'));
+  const fAgg = aggregate(RAW.filter(r=>matches(r,'Gender_L') && r.Gender_L==='Female'));
+  const genderLeader = fAgg.meanSS>=mAgg.meanSS ? 'girls' : 'boys';
+  const genderGap = Math.abs(fAgg.meanSS-mAgg.meanSS);
+
+  const uAgg = aggregate(RAW.filter(r=>matches(r,'Loc_L') && r.Loc_L==='Urban'));
+  const rAgg = aggregate(RAW.filter(r=>matches(r,'Loc_L') && r.Loc_L==='Rural'));
+  const locGap = uAgg.meanSS - rAgg.meanSS;
+
+  const overallAgg = aggregate(filteredRows(null));
+  const strongestDomain = SUBDOMAINS.flatMap(g=>g.cols).reduce((a,c)=> (overallAgg[c.key]>overallAgg[a.key]?c:a));
+  const weakestDomain = SUBDOMAINS.flatMap(g=>g.cols).reduce((a,c)=> (overallAgg[c.key]<overallAgg[a.key]?c:a));
+
+  const cards = [
+    {tag:'Top performer', text:`<b>${best.name}</b> leads with an average scale score of <b>${fmt0(best.agg.meanSS)}</b>.`},
+    {tag:'Needs support', text:`<b>${worst.name}</b> trails at <b>${fmt0(worst.agg.meanSS)}</b> — a gap of <b>${fmt0(spread)} pts</b> from the top state.`},
+    {tag:'Gender pattern', text: genderGap<0.5 ? `Male and female pupils score within <b>${fmt1(genderGap)} pts</b> of each other.` : `<b>${genderLeader}</b> outscore${genderLeader==='girls'?'':'s'} the other group by <b>${fmt1(genderGap)} pts</b> on average.`},
+    {tag:'Skill focus', text:`Strongest domain is <b>${strongestDomain.label}</b> (${fmt1(overallAgg[strongestDomain.key])}%); weakest is <b>${weakestDomain.label}</b> (${fmt1(overallAgg[weakestDomain.key])}%).`}
+  ];
+  document.getElementById('insightRow').innerHTML = cards.map(c=>`
+    <div class="insight-card"><div class="itag">${c.tag}</div><div class="itext">${c.text}</div></div>
+  `).join('');
+}
+
+// ---------- Donut ----------
+function renderDonut(){
+  const rows = filteredRows(null);
+  const agg = aggregate(rows);
+  const total = agg.n || 1;
+  const order = [4,3,2,1];
+  let cum = 0;
+  const r = 60, cx=75, cy=75, sw=22;
+  const circumf = 2*Math.PI*r;
+  let paths='';
+  order.forEach(k=>{
+    const frac = agg.pl[k]/total;
+    const dash = frac*circumf;
+    paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${PL_COLORS[k]}" stroke-width="${sw}"
+      stroke-dasharray="${dash} ${circumf-dash}" stroke-dashoffset="${-cum}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
+    cum += dash;
+  });
+  document.getElementById('donutSvg').innerHTML = paths +
+    `<text x="${cx}" y="${cy-2}" text-anchor="middle" font-family="Newsreader,serif" font-size="20" font-weight="600" fill="#211F19">${fmt1((agg.pl[3]+agg.pl[4])/total*100)}%</text>
+     <text x="${cx}" y="${cy+15}" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#6C6656">meets +</text>`;
+
+  document.getElementById('donutLegend').innerHTML = [4,3,2,1].map(k=>{
+    const pct = fmt1(agg.pl[k]/total*100);
+    return `<div class="dl-item"><span class="dl-dot" style="background:${PL_COLORS[k]}"></span><span class="dl-label">${PL_LABELS[k]}</span><span class="dl-pct">${pct}%</span></div>`;
+  }).join('');
+}
+
+// ---------- Mini domain summary (reading comprehension vs grammar) ----------
+function renderDomainMini(){
+  const rows = filteredRows(null);
+  const agg = aggregate(rows);
+  const items = [
+    {label:'Reading comprehension', key:'psub1_1'},
+    {label:'Grammatical accuracy', key:'psub1_2'},
+    {label:'Vocabulary', key:'psub2_3'},
+    {label:'Phonics', key:'psub2_6'}
+  ];
+  document.getElementById('domainMini').innerHTML = items.map(it=>{
+    const v = agg[it.key]||0;
+    return `<div class="sd-row">
+      <div class="sd-name">${it.label}</div>
+      <div class="sd-track"><div class="sd-fill" style="width:${v}%;background:var(--green-mid)"></div></div>
+      <div class="sd-val">${fmt1(v)}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- Subdomain full breakdown ----------
+function renderSubdomains(){
+  const rows = filteredRows(null);
+  const agg = aggregate(rows);
+  let html = '';
+  SUBDOMAINS.forEach(g=>{
+    html += `<div><div class="sd-group-title">${g.group}</div>`;
+    g.cols.forEach(c=>{
+      const v = agg[c.key]||0;
+      html += `<div class="sd-row">
+        <div class="sd-name">${c.label}</div>
+        <div class="sd-track"><div class="sd-fill" style="width:${v}%;background:${v>=55?'var(--green-mid)':(v>=40?'var(--amber)':'var(--red)')}"></div></div>
+        <div class="sd-val">${fmt1(v)}%</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  document.getElementById('subdomainGrid').innerHTML = html;
+}
+
+// ---------- Equity panels ----------
+function renderEquityBars(containerId, gapId, dimKey, categories, colors){
+  const container = document.getElementById(containerId);
+  const aggs = categories.map(cat=>{
+    const rows = RAW.filter(r=> matches(r, dimKey) && r[dimKey]===cat);
+    return {cat, agg: aggregate(rows)};
+  });
+  const maxV = Math.max(...aggs.map(a=>a.agg.meanSS), 1);
+  container.innerHTML = aggs.map((a,i)=>{
+    const h = a.agg.n ? (a.agg.meanSS/maxV*100) : 0;
+    return `<div class="eq-col">
+      <div class="eq-bar" style="height:${h}%;background:${colors[i]}">
+        <div class="eq-num">${a.agg.n? fmt0(a.agg.meanSS):'–'}</div>
+      </div>
+      <div class="eq-name">${a.cat}</div>
+    </div>`;
+  }).join('');
+  if(aggs.length===2 && aggs[0].agg.n && aggs[1].agg.n){
+    const diff = aggs[0].agg.meanSS - aggs[1].agg.meanSS;
+    document.getElementById(gapId).innerHTML = `Gap: <b>${Math.abs(diff).toFixed(1)} pts</b> favouring ${diff>=0?aggs[0].cat:aggs[1].cat}`;
+  } else {
+    document.getElementById(gapId).innerHTML = '';
+  }
+}
+
+function renderEquity(){
+  renderEquityBars('eqGender','eqGenderGap','Gender_L',['Female','Male'],['#0B5D3B','#B4863A']);
+  renderEquityBars('eqLoc','eqLocGap','Loc_L',['Urban','Rural'],['#0B5D3B','#B4863A']);
+  renderEquityBars('eqOwn','eqOwnGap','Own_L',['Private','Public'],['#0B5D3B','#B4863A']);
+}
+
+// ---------- Active filter note ----------
+function renderNote(){
+  const parts = [];
+  if(filters.State!=='All') parts.push(filters.State);
+  if(filters.Gender_L!=='All') parts.push(filters.Gender_L+' pupils');
+  if(filters.Loc_L!=='All') parts.push(filters.Loc_L+' schools');
+  if(filters.Own_L!=='All') parts.push(filters.Own_L+' schools');
+  document.getElementById('activeNote').innerHTML = parts.length
+    ? `Showing: <b>${parts.join(' · ')}</b>`
+    : `Showing: <b>All pupils, all states and FCT</b>`;
+}
+
+// ---------- Render all ----------
+function renderAll(){
+  renderNote();
+  renderKPIs();
+  renderInsights();
+  renderMap();
+  renderRanking();
+  renderDonut();
+  renderDomainMini();
+  renderSubdomains();
+  renderEquity();
+}
+
+// ---------- Events ----------
+fState.addEventListener('change', ()=>{ filters.State = fState.value; renderAll(); });
+document.getElementById('fGender').addEventListener('change', (e)=>{ filters.Gender_L = e.target.value; renderAll(); });
+document.getElementById('fLoc').addEventListener('change', (e)=>{ filters.Loc_L = e.target.value; renderAll(); });
+document.getElementById('fOwn').addEventListener('change', (e)=>{ filters.Own_L = e.target.value; renderAll(); });
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  filters = {State:'All', Gender_L:'All', Loc_L:'All', Own_L:'All'};
+  fState.value='All'; document.getElementById('fGender').value='All';
+  document.getElementById('fLoc').value='All'; document.getElementById('fOwn').value='All';
+  renderAll();
+});
+document.getElementById('rankTop').addEventListener('click', (e)=>{ rankMode='top'; setRankBtn(e.target); renderRanking(); });
+document.getElementById('rankBottom').addEventListener('click', (e)=>{ rankMode='bottom'; setRankBtn(e.target); renderRanking(); });
+document.getElementById('rankAll').addEventListener('click', (e)=>{ rankMode='all'; setRankBtn(e.target); renderRanking(); });
+function setRankBtn(target){
+  document.querySelectorAll('.rank-toggle button').forEach(b=>b.classList.remove('on'));
+  target.classList.add('on');
+}
+
+renderAll();
+</script>
+</body>
+</html>
